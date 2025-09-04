@@ -1,0 +1,19 @@
+# Arquivos do Xcode
+*.xcworkspace
+*.xcuserstate
+*.xcuserdata/
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+DerivedData/
+build/
+
+# MacOS
+.DS_Store
+
+# Compilados
+*.o
+*.out
+*.a
+*.so
+*.dylib
+*.exe
