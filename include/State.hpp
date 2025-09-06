@@ -10,8 +10,6 @@
 
 #include "Sprite.hpp"
 
-#include <stdio.h>
-
 class State {
 public:
     State();

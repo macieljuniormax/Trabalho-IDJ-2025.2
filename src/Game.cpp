@@ -6,10 +6,6 @@
 //
 
 #include "Game.hpp"
-
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_mixer.h>
-
 #include <iostream>
 
 Game* Game::instance = nullptr;

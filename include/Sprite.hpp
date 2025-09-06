@@ -11,8 +11,7 @@
 #define INCLUDE_SDL_IMAGE
 
 #include "SDL_include.h"
-
-#include <string>
+#include <iostream>
 
 class Sprite {
 public:
