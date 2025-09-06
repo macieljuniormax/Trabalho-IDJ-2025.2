@@ -9,6 +9,7 @@
 #define State_hpp
 
 #include "Sprite.hpp"
+#include "Music.hpp"
 
 class State {
 public:
@@ -21,8 +22,8 @@ public:
     bool QuitRequested();
    
 private:
-    Sprite* bg;
-//  Music music;
+    Sprite bg;
+    Music music;
     bool quitRequested;
 };
 

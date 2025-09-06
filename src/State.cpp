@@ -7,14 +7,14 @@
 
 #include "State.hpp"
 
-State::State() {
-    quitRequested = false;
-    bg = new Sprite();
+State::State() : bg(), music(), quitRequested(false){
+    LoadAssets();
+    music.Play();
 }
 
 void State::LoadAssets() {
-    bg->Open("resources/img/Background.png");
-    // Abri Música aqui quando já tivermos
+    bg.Open("resources/img/Background.png");
+    music.Open("resources/audio/BGM.wav");
 }
 
 void State::Update(float) {
@@ -24,8 +24,8 @@ void State::Update(float) {
 }
 
 void State::Render() {
-    if (bg != nullptr && bg->IsOpen()) {
-        bg->Render(0, 0);
+    if (bg.IsOpen()) {
+        bg.Render(0, 0);
     }
 }
 

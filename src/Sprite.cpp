@@ -8,12 +8,9 @@
 #include "Sprite.hpp"
 #include "Game.hpp"
 
-Sprite::Sprite() {
-    texture = nullptr;
-}
+Sprite::Sprite() : texture(nullptr){}
 
-Sprite::Sprite(std::string file) {
-    texture = nullptr;
+Sprite::Sprite(std::string file) : texture(nullptr){
     Open(file);
 }
 

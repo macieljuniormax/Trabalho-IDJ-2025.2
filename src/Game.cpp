@@ -18,7 +18,7 @@ Game& Game::GetInstance() {
     return *instance;
 }
 
-Game::Game(std::string title, int width, int hieght) {
+Game::Game(std::string title, int width, int height) {
     if (instance != nullptr) {
         std::cerr << "Erro: já existe uma instância de Game rodando!" << std::endl;
         exit(1);
@@ -52,7 +52,7 @@ Game::Game(std::string title, int width, int hieght) {
     }
 
     window = SDL_CreateWindow(title.c_str(),SDL_WINDOWPOS_CENTERED,
-                              SDL_WINDOWPOS_CENTERED, width, hieght, 0);
+                              SDL_WINDOWPOS_CENTERED, width, height, 0);
     if (window == nullptr) {
         throw std::runtime_error(std::string("Erro ao criar janela: ")+ SDL_GetError());
     }
@@ -63,7 +63,6 @@ Game::Game(std::string title, int width, int hieght) {
     }
 
     state = new State();
-    state->LoadAssets();
 }
 
 Game::~Game() {
