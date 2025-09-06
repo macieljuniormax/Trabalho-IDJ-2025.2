@@ -60,45 +60,45 @@ Game::Game(std::string title, int width, int hieght) {
     if (window == nullptr) {
         throw std::runtime_error(std::string("Erro ao criar janela: ")+ SDL_GetError());
     }
-    
+
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == nullptr) {
         throw std::runtime_error(std::string("Erro ao renderizar: ")+ SDL_GetError());
     }
-    
-    //    A última coisa que o construtor deve fazer é
-    //    instanciar um State para o nosso jogo, inicializando o membro state
-    //    Lembrar de adicionar State aqui
-    //    state = new State();
+
+    state = new State();
+    state->LoadAssets();
 }
 
 Game::~Game() {
-    //    Lembrar de remover State aqui
-    //    delete state;
-    
+    delete state;
+
     Mix_CloseAudio();
     Mix_Quit();
-    
+
     IMG_Quit();
-    
+
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    
+
     SDL_Quit();
 }
 
-//State& Game::GetState() {
-//    return *state;
-//} Rever após implementar classe State
+State& Game::GetState() {
+    return *state;
+}
 
 SDL_Renderer* Game::GetRenderer() {
     return renderer;
 }
 
-// implementar run quando tiver State
-
 void Game::Run() {
-    
+    while (!state->QuitRequested()) {
+        state->Update(0);
+        state->Render();
+        SDL_RenderPresent(renderer);
+        SDL_Delay(33);
+    }
 }
 
 
