@@ -12,7 +12,7 @@ Game* Game::instance = nullptr;
 
 Game& Game::GetInstance() {
     if (instance == nullptr) {
-        instance = new Game("Maciel Ferreira Custódio Júnior - 190100087", 1024, 600);
+        instance = new Game("Maciel Ferreira Custódio Júnior - 190100087", 1200, 900);
     }
 
     return *instance;
