@@ -1,4 +1,4 @@
-# Introdução ao Desenvolvimento de Jogos – Trabalho IDJ 2025.2
+# Introdução ao Desenvolvimento de Jogos
 
 Repositório da disciplina **Introdução ao Desenvolvimento de Jogos (IDJ)** – Universidade de Brasília (UnB), semestre **2025.2**.
 Professores: Carla Denise Castanho e Eduardo Azevedo.
