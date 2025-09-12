@@ -1,0 +1,232 @@
+name: Build & Release (Make + SDL2)
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+    tags:     [ "v*" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Executar sem publicar release (mesmo em tag)?"
+        required: false
+        default: "true"
+        type: choice
+        options: ["true", "false"]
+
+permissions:
+  contents: write
+
+env:
+  ASSET_DIRS: "resources"
+  BUNDLE_FILES: "README.md makefile"
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ---------- Linux ----------
+      - name: Install deps (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make g++ \
+            libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev
+
+      - name: Build (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          make clean
+          make release
+          test -f JOGO
+
+      - name: Upload executable (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: JOGO-linux
+          path: JOGO
+
+      # ---------- macOS ----------
+      - name: Install deps (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew update
+          brew install make gcc pkg-config sdl2 sdl2_image sdl2_mixer sdl2_ttf
+
+      - name: Build (macOS) via pkg-config
+        if: matrix.os == 'macos-latest'
+        shell: bash
+        run: |
+          CFLAGS="$(pkg-config --cflags sdl2 SDL2_image SDL2_mixer SDL2_ttf)"
+          LFLAGS="$(pkg-config --libs   sdl2 SDL2_image SDL2_mixer SDL2_ttf)"
+          make clean || true
+          make release FLAGS="$CFLAGS" LIBS="$LFLAGS -lm"
+          test -f JOGO
+
+      - name: Upload executable (macOS)
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: JOGO-macos
+          path: JOGO
+
+      # ---------- Windows ----------
+      - name: Setup MSYS2 (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          msystem: UCRT64
+          cache: true
+          install: >-
+            git
+            make
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-pkg-config
+            mingw-w64-ucrt-x86_64-SDL2
+            mingw-w64-ucrt-x86_64-SDL2_image
+            mingw-w64-ucrt-x86_64-SDL2_mixer
+            mingw-w64-ucrt-x86_64-SDL2_ttf
+
+      - name: Build (Windows) com SDL2main
+        if: matrix.os == 'windows-latest'
+        shell: msys2 {0}
+        run: |
+          set -e
+          export PKG_CONFIG_PATH="/ucrt64/lib/pkgconfig"
+
+          CFLAGS="$(pkg-config --cflags sdl2 SDL2_image SDL2_mixer SDL2_ttf)"
+          LFLAGS="$(pkg-config --libs sdl2 SDL2_image SDL2_mixer SDL2_ttf)"
+
+          rm -rf dep bin || true
+          rm -f JOGO.exe || true
+          mkdir -p dep bin
+
+          mapfile -t SRCS < <(find src -type f -name '*.cpp' | sort)
+
+          for src in "${SRCS[@]}"; do
+            base="$(basename "${src%.*}")"
+            obj="bin/${base}.o"
+            depf="dep/${base}.d"
+            echo "Compilando $src -> $obj"
+            g++ -Iinclude $CFLAGS -M -MT "$obj" -MP -MF "$depf" "$src"
+            g++ -Iinclude $CFLAGS -c -o "$obj" "$src"
+          done
+
+          echo "Linkando JOGO.exe"
+          OBJS=$(printf "bin/%s.o " $(basename -s .cpp "${SRCS[@]}"))
+          g++ $OBJS -o JOGO.exe $LFLAGS
+
+          ls -l
+          test -f JOGO.exe
+
+      - name: Upload executable (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: JOGO-windows
+          path: JOGO.exe
+
+  package:
+    name: Package code + assets + executáveis
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Definir nomes (tag vs snapshot)
+        id: names
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            VERSION="${GITHUB_REF_NAME}"                       # v1.0.0
+            MAJOR="$(echo "$VERSION" | sed -E 's/^v([0-9]+).*/\1/')"
+            PKG_DIR="Trabalho_${MAJOR}-${VERSION}"             # Trabalho_1-v1.0.0
+            ZIP_NAME="${VERSION}-bundle.zip"                   # v1.0.0-bundle.zip
+            RELEASE_NAME="Trabalho ${MAJOR} – ${VERSION}"      # Trabalho 1 – v1.0.0
+          else
+            SHORT_SHA="$(git rev-parse --short HEAD)"
+            VERSION="snapshot-${SHORT_SHA}"
+            PKG_DIR="Trabalho_snapshot-${VERSION}"
+            ZIP_NAME="${VERSION}-bundle.zip"
+            RELEASE_NAME=""
+          fi
+
+          echo "VERSION=$VERSION"           >> $GITHUB_ENV
+          echo "PKG_DIR=$PKG_DIR"           >> $GITHUB_ENV
+          echo "ZIP_NAME=$ZIP_NAME"         >> $GITHUB_ENV
+          echo "RELEASE_NAME=$RELEASE_NAME" >> $GITHUB_ENV
+
+      - name: Download Linux exe
+        uses: actions/download-artifact@v4
+        with:
+          name: JOGO-linux
+          path: artifacts/linux
+
+      - name: Download macOS exe
+        uses: actions/download-artifact@v4
+        with:
+          name: JOGO-macos
+          path: artifacts/macos
+
+      - name: Download Windows exe
+        uses: actions/download-artifact@v4
+        with:
+          name: JOGO-windows
+          path: artifacts/windows
+
+      - name: Assemble package
+        run: |
+          set -e
+          PKG="${PKG_DIR}"
+          mkdir -p "$PKG/builds/linux" "$PKG/builds/macos" "$PKG/builds/windows"
+
+          cp -R src include "$PKG"/
+
+          for f in $BUNDLE_FILES; do
+            if [ -f "$f" ]; then cp "$f" "$PKG/"; fi
+          done
+
+          for d in $ASSET_DIRS; do
+            if [ -d "$d" ]; then
+              cp -R "$d" "$PKG/"
+              cp -R "$d" "$PKG/builds/linux/"   || true
+              cp -R "$d" "$PKG/builds/macos/"   || true
+              cp -R "$d" "$PKG/builds/windows/" || true
+            fi
+          done
+
+          if [ -f artifacts/linux/JOGO ]; then       cp artifacts/linux/JOGO       "$PKG/builds/linux/JOGO"; fi
+          if [ -f artifacts/macos/JOGO ]; then       cp artifacts/macos/JOGO       "$PKG/builds/macos/JOGO"; fi
+          if [ -f artifacts/windows/JOGO.exe ]; then cp artifacts/windows/JOGO.exe "$PKG/builds/windows/JOGO.exe"; fi
+
+          if [ -f "$PKG/builds/linux/JOGO" ]; then chmod +x "$PKG/builds/linux/JOGO"; fi
+          if [ -f "$PKG/builds/macos/JOGO" ]; then chmod +x "$PKG/builds/macos/JOGO"; fi
+
+          zip -r "$ZIP_NAME" "$PKG" -x "**/.git/**" "**/.DS_Store" "**/__MACOSX/**"
+
+      - name: Upload combined zip (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-zip
+          path: ${{ env.ZIP_NAME }}
+
+      - name: Publish to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v') && (github.event_name != 'workflow_dispatch' || inputs.dry_run == 'false')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ env.RELEASE_NAME }}
+          files: ${{ env.ZIP_NAME }}
