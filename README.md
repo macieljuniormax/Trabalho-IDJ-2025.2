@@ -17,6 +17,21 @@ As principais classes implementadas foram:
 - **Music**: responsável pelo carregamento e execução de músicas.
 - **Main**: ponto de entrada do programa, instanciando `Game` e iniciando a execução.
 
+## 🧟 Trabalho 2 – GameObject, Componentes e Animações
+As principais classes e alterações implementadas foram:
+
+- **Rect**: estrutura auxiliar para representar posição e dimensões.
+- **Component**: classe base abstrata para encapsular comportamentos de objetos.
+- **GameObject**: gerencia um conjunto de componentes, delegando chamadas de `Update` e `Render`.
+- **State**: atualizado para armazenar objetos dinamicamente com `std::unique_ptr`, permitindo adicionar e remover `GameObject`s.
+- **Sprite**: adaptado para suportar *spritesheets* e animações 2D (múltiplos frames).
+- **Animation**: representa uma sequência de frames com tempo de exibição.
+- **SpriteRenderer**: componente responsável por desenhar o sprite de um `GameObject`.
+- **Zombie**: primeiro inimigo, com pontos de vida e troca de animação ao “morrer”.
+- **Animator**: gerencia transições de animação, trocando frames automaticamente.
+
+Essas mudanças permitiram criar o **primeiro personagem animado** do jogo.
+
 ## 👤 Autor
 - **Maciel Ferreira Custódio Júnior**
   - Matrícula: 190100087
