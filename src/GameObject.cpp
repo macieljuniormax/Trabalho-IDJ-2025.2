@@ -8,15 +8,17 @@
 #include "GameObject.hpp"
 #include "Component.hpp"
 
+#include <cstddef>
+
 GameObject::GameObject() {
     isDead = false;
 }
 
 GameObject::~GameObject() {
-    for (size_t i = components.size() - 1; i >= 0; i--) {
+    for (std::size_t i = components.size() - 1; i >= 0; i--) {
         delete *(components.begin() + i);
     }
-    
+
     components.clear();
 }
 
