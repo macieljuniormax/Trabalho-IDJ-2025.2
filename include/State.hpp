@@ -10,21 +10,24 @@
 
 #include "Sprite.hpp"
 #include "Music.hpp"
+#include "GameObject.hpp"
 
 class State {
 public:
     State();
+    ~State();
     
     void LoadAssets();
     void Update(float dt);
     void Render();
-    
     bool QuitRequested();
-   
+    void AddObject(GameObject* go);
+    
 private:
     Sprite bg;
     Music music;
     bool quitRequested;
+    std::vector<std::unique_ptr<GameObject>> objectArray;
 };
 
 #endif /* State_hpp */
