@@ -27,7 +27,6 @@ public:
     void AddObject(GameObject* go);
     
 private:
-    Sprite bg;
     Music music;
     bool quitRequested;
     std::vector<std::unique_ptr<GameObject>> objectArray;

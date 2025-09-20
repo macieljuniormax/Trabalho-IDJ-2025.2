@@ -6,8 +6,9 @@
 //
 
 #include "State.hpp"
+#include "SpriteRenderer.hpp"
 
-State::State() : bg(), music(), quitRequested(false){
+State::State() : music(), quitRequested(false){
     LoadAssets();
     music.Play();
 }
@@ -17,8 +18,18 @@ State::~State() {
 }
 
 void State::LoadAssets() {
-    bg.Open("resources/img/Background.png");
     music.Open("resources/audio/BGM.wav");
+    
+    GameObject* background = new GameObject();
+    
+    background -> box.x = 0;
+    background -> box.y = 0;
+    background -> box.w = 1200;
+    background -> box.h = 900;
+    
+    background -> AddComponent(new SpriteRenderer(*background, "resources/img/Background.png"));
+    
+    AddObject(background);
 }
 
 void State::Update(float dt) {
@@ -39,10 +50,6 @@ void State::Update(float dt) {
 }
 
 void State::Render() {
-    if (bg.IsOpen()) {
-        bg.Render(0, 0);
-    }
-    
     for (const auto& obj : objectArray) {
         obj -> Render();
     }
