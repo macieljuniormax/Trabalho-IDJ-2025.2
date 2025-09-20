@@ -6,7 +6,9 @@
 //
 
 #include "Game.hpp"
+
 #include <iostream>
+#include <stdexcept>
 
 Game* Game::instance = nullptr;
 

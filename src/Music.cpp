@@ -7,6 +7,8 @@
 
 #include "Music.hpp"
 
+#include <iostream>
+
 Music::Music() : music(nullptr){}
 
 Music::Music(std::string file) : music(nullptr) {

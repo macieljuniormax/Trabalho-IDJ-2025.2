@@ -6,29 +6,75 @@
 //
 
 #include "State.hpp"
+#include "SpriteRenderer.hpp"
+#include "Zombie.hpp"
 
-State::State() : bg(), music(), quitRequested(false){
+#include <cstddef>
+
+State::State() : music(), quitRequested(false){
     LoadAssets();
     music.Play();
 }
 
-void State::LoadAssets() {
-    bg.Open("resources/img/Background.png");
-    music.Open("resources/audio/BGM.wav");
+State::~State() {
+    objectArray.clear();
 }
 
-void State::Update(float) {
+void State::LoadAssets() {
+    music.Open("resources/audio/BGM.wav");
+
+    /* Background */
+    GameObject* background = new GameObject();
+
+    background -> box.x = 0;
+    background -> box.y = 0;
+    background -> box.w = 1200;
+    background -> box.h = 900;
+
+    background -> AddComponent(new SpriteRenderer(*background, "resources/img/Background.png"));
+
+    AddObject(background);
+    
+    
+    /* Zombie */
+    GameObject* zombieGO = new GameObject();
+    Zombie* zombie = new Zombie(*zombieGO);
+    
+    zombieGO -> box.x = 600;
+    zombieGO -> box.y = 600;
+
+    zombieGO -> AddComponent(zombie);
+    
+    AddObject(zombieGO);
+}
+
+void State::Update(float dt) {
     if (SDL_QuitRequested()) {
         quitRequested = true;
+    }
+
+    for (std::size_t i = 0; i < objectArray.size(); i++) {
+        objectArray[i]->Update(dt);
+    }
+
+    for (std::size_t i = 0; i < objectArray.size(); i++) {
+        if (objectArray[i]->IsDead()) {
+            objectArray.erase(objectArray.begin() + i);
+            i--;
+        }
     }
 }
 
 void State::Render() {
-    if (bg.IsOpen()) {
-        bg.Render(0, 0);
+    for (const auto& obj : objectArray) {
+        obj -> Render();
     }
 }
 
 bool State::QuitRequested() {
     return quitRequested;
+}
+
+void State::AddObject(GameObject *go) {
+    objectArray.emplace_back(go);
 }
