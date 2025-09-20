@@ -7,6 +7,7 @@
 
 #include "State.hpp"
 #include "SpriteRenderer.hpp"
+#include "Zombie.hpp"
 
 #include <cstddef>
 
@@ -22,6 +23,7 @@ State::~State() {
 void State::LoadAssets() {
     music.Open("resources/audio/BGM.wav");
 
+    /* Background */
     GameObject* background = new GameObject();
 
     background -> box.x = 0;
@@ -32,6 +34,18 @@ void State::LoadAssets() {
     background -> AddComponent(new SpriteRenderer(*background, "resources/img/Background.png"));
 
     AddObject(background);
+    
+    
+    /* Zombie */
+    GameObject* zombieGO = new GameObject();
+    Zombie* zombie = new Zombie(*zombieGO);
+    
+    zombieGO -> box.x = 600;
+    zombieGO -> box.y = 600;
+
+    zombieGO -> AddComponent(zombie);
+    
+    AddObject(zombieGO);
 }
 
 void State::Update(float dt) {
