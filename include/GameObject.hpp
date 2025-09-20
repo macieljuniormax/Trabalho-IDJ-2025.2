@@ -30,8 +30,21 @@ public:
     void AddComponent(Component* cpt);
     void RemoveComponent(Component* cpt);
     
+    template<typename T>
+    T* GetComponent(){
+        long unsigned int index;
+        for(index=0;index<components.size();index++){
+            T* component = dynamic_cast<T*>(components[index]);
+            if(component != nullptr){
+                return component;
+            }
+        }
+        return nullptr;
+    }
+
+    
 private:
-std::vector<Component*> components;
+    std::vector<Component*> components;
     bool isDead;
 };
 
