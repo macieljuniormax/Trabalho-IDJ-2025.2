@@ -10,8 +10,9 @@
 
 #define INCLUDE_SDL_IMAGE
 
+#include <string>
+
 #include "SDL_include.h"
-#include <iostream>
 
 class Sprite {
 public:

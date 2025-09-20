@@ -12,6 +12,9 @@
 #include "Music.hpp"
 #include "GameObject.hpp"
 
+#include <vector>
+#include <memory>
+
 class State {
 public:
     State();

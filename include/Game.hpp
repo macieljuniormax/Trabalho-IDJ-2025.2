@@ -11,8 +11,11 @@
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
 
-#include "SDL_include.h"
 #include "State.hpp"
+
+#include <string>
+
+#include "SDL_include.h"
 
 class Game {
 public:

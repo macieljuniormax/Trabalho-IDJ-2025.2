@@ -9,7 +9,8 @@
 #define GameObject_hpp
 
 #include "Rect.hpp"
-#include <iostream>
+
+#include <vector>
 
 class Component;
 
@@ -28,8 +29,6 @@ public:
     void RequestDelete();
     void AddComponent(Component* cpt);
     void RemoveComponent(Component* cpt);
-
-    Component* GetComponent(std::string type);
     
 private:
 std::vector<Component*> components;

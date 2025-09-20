@@ -8,6 +8,8 @@
 #include "Sprite.hpp"
 #include "Game.hpp"
 
+#include <iostream>
+
 Sprite::Sprite() : texture(nullptr){}
 
 Sprite::Sprite(std::string file) : texture(nullptr){
