@@ -15,8 +15,8 @@ Sprite::Sprite()
 
 Sprite::Sprite(std::string file, int frameCountW, int frameCountH)
     : texture(nullptr), width(0), height(0) {
-        this -> frameCountW = (frameCountW > 0 ? frameCountW : 1);
-        this -> frameCountH = (frameCountH > 0 ? frameCountH : 1);
+    this -> frameCountW = (frameCountW > 0 ? frameCountW : 1);
+    this -> frameCountH = (frameCountH > 0 ? frameCountH : 1);
     Open(file);
 }
 
@@ -81,7 +81,7 @@ int Sprite::GetHeight() {
 bool Sprite::IsOpen() { return texture != nullptr; }
 
 void Sprite::SetFrame(int frame) {
-    if ((frame < 0) || (frame >= frameCountW * frameCountH))  {
+    if ((frame < 0) || (frame >= frameCountW * frameCountH)){
         std::cerr << "Frame não existe!" << std::endl;
         return;
     }
@@ -95,7 +95,7 @@ void Sprite::SetFrame(int frame) {
     int x = col * w;
     int y = row * h;
 
-    if (x + w > width)  x = width  - w;
+    if (x + w > width) x = width - w;
     if (y + h > height) y = height - h;
     if (x < 0) x = 0;
     if (y < 0) y = 0;

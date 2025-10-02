@@ -24,7 +24,7 @@ public:
     void SetTileSet(TileSet* tileSet);
     int& At(int x, int y, int z = 0);
     void Render();
-    void RenderLater(int layer);
+    void RenderLayer(int layer);
     
     int GetWidth() const { return mapWidth; };
     int GetHeight() const { return mapHeight; };
