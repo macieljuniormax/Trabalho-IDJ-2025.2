@@ -40,7 +40,7 @@ void TileSet::RenderTile(unsigned int index, float x, float y) {
         std::cerr << "Índice fora de range" << std::endl;
         return;
     }
-    
+
     tileSet.SetFrame(index);
     tileSet.Render(x, y, tileWidth, tileHeight);
 }

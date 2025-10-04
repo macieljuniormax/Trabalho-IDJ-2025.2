@@ -36,7 +36,7 @@ void Zombie::Damage(int damage) {
         if (auto *anim = associated.GetComponent<Animator>()) {
             anim->SetAnimation("dead");
         }
-        
+
         deathSound.Play(1);
     }
 }

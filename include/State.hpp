@@ -8,25 +8,25 @@
 #ifndef State_hpp
 #define State_hpp
 
-#include "Sprite.hpp"
-#include "Music.hpp"
 #include "GameObject.hpp"
+#include "Music.hpp"
+#include "Sprite.hpp"
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 class State {
-public:
+  public:
     State();
     ~State();
-    
+
     void LoadAssets();
     void Update(float dt);
     void Render();
     bool QuitRequested();
-    void AddObject(GameObject* go);
-    
-private:
+    void AddObject(GameObject *go);
+
+  private:
     Music music;
     bool quitRequested;
     std::vector<std::unique_ptr<GameObject>> objectArray;

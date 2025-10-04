@@ -15,18 +15,18 @@
 #include <string>
 
 class Sound {
-public:
+  public:
     Sound();
-    Sound(const std::string& file);
+    Sound(const std::string &file);
     ~Sound();
-    
+
     void Play(int times = 1);
     void Stop();
     void Open(const std::string file);
     bool IsOpen() const;
-    
-private:
-    Mix_Chunk* chunk;
+
+  private:
+    Mix_Chunk *chunk;
     int channel;
 };
 

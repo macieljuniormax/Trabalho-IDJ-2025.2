@@ -12,28 +12,28 @@
 #include "GameObject.hpp"
 #include "TileSet.hpp"
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 class TileMap : public Component {
-public:
-    TileMap(GameObject& associated, const std::string& file, TileSet* tileSet);
-    
+  public:
+    TileMap(GameObject &associated, const std::string &file, TileSet *tileSet);
+
     void Load(std::string file);
-    void SetTileSet(TileSet* tileSet);
-    int& At(int x, int y, int z = 0);
-    
+    void SetTileSet(TileSet *tileSet);
+    int &At(int x, int y, int z = 0);
+
     void Render() override;
     void Update(float dt) override;
-    
+
     void RenderLayer(int layer);
-    
+
     int GetWidth() const { return mapWidth; };
     int GetHeight() const { return mapHeight; };
     int GetDepth() const { return mapDeth; };
-    
-private:
+
+  private:
     std::vector<int> tileMatrix;
     std::unique_ptr<TileSet> tileSet;
     int mapWidth;

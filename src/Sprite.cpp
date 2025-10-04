@@ -21,9 +21,7 @@ Sprite::Sprite(std::string file, int frameCountW, int frameCountH)
     Open(file);
 }
 
-Sprite::~Sprite() {
-    texture = nullptr;
-}
+Sprite::~Sprite() { texture = nullptr; }
 
 void Sprite::Open(std::string file) {
     texture = Resources::GetImage(file);

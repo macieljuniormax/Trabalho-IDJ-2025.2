@@ -10,9 +10,7 @@
 
 #include <cstddef>
 
-GameObject::GameObject() {
-    isDead = false;
-}
+GameObject::GameObject() { isDead = false; }
 
 GameObject::~GameObject() {
     for (std::size_t i = components.size() - 1; i >= 0; i--) {
@@ -24,27 +22,21 @@ GameObject::~GameObject() {
 
 void GameObject::Update(float dt) {
     for (auto component : components) {
-        component -> Update(dt);
+        component->Update(dt);
     }
 }
 
 void GameObject::Render() {
     for (auto componet : components) {
-        componet -> Render();
+        componet->Render();
     }
 }
 
-bool GameObject::IsDead() {
-    return isDead;
-}
+bool GameObject::IsDead() { return isDead; }
 
-void GameObject::RequestDelete() {
-    isDead = true;
-}
+void GameObject::RequestDelete() { isDead = true; }
 
-void GameObject::AddComponent(Component *cpt) {
-    components.push_back(cpt);
-}
+void GameObject::AddComponent(Component *cpt) { components.push_back(cpt); }
 
 void GameObject::RemoveComponent(Component *cpt) {
     for (auto it = components.begin(); it != components.end(); ++it) {

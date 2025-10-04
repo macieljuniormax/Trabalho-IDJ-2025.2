@@ -14,37 +14,34 @@
 
 class Component;
 
-
 class GameObject {
-public:
+  public:
     Rect box;
-    
+
     GameObject();
     ~GameObject();
-    
+
     void Update(float dt);
     void Render();
     bool IsDead();
-    
+
     void RequestDelete();
-    void AddComponent(Component* cpt);
-    void RemoveComponent(Component* cpt);
-    
-    template<typename T>
-    T* GetComponent(){
+    void AddComponent(Component *cpt);
+    void RemoveComponent(Component *cpt);
+
+    template <typename T> T *GetComponent() {
         long unsigned int index;
-        for(index=0;index<components.size();index++){
-            T* component = dynamic_cast<T*>(components[index]);
-            if(component != nullptr){
+        for (index = 0; index < components.size(); index++) {
+            T *component = dynamic_cast<T *>(components[index]);
+            if (component != nullptr) {
                 return component;
             }
         }
         return nullptr;
     }
 
-    
-private:
-    std::vector<Component*> components;
+  private:
+    std::vector<Component *> components;
     bool isDead;
 };
 

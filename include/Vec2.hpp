@@ -9,9 +9,9 @@
 #define Vec2_hpp
 
 class Vec2 {
-public:
+  public:
     float x, y;
-    
+
     Vec2();
     Vec2(float x, float y);
 };

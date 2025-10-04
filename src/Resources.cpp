@@ -28,13 +28,13 @@ SDL_Texture *Resources::GetImage(const std::string &file) {
         std::cerr << "Falha ao carregar textura" << IMG_GetError() << std::endl;
         return nullptr;
     }
-    
+
     imageTable.emplace(file, texture);
-    
+
     return texture;
 }
 
-Mix_Music *Resources::GetMusic(const std::string& file) {
+Mix_Music *Resources::GetMusic(const std::string &file) {
     auto it = musicTable.find(file);
 
     if (it != musicTable.end()) {
@@ -42,12 +42,12 @@ Mix_Music *Resources::GetMusic(const std::string& file) {
     }
 
     Mix_Music *music = Mix_LoadMUS(file.c_str());
-    
+
     if (!music) {
         std::cerr << "Falha ao carregar música" << Mix_GetError() << std::endl;
         return nullptr;
     }
-    
+
     musicTable.emplace(file, music);
     return music;
 }
@@ -59,43 +59,43 @@ Mix_Chunk *Resources::GetSound(const std::string &file) {
         return it->second;
     }
 
-    Mix_Chunk* chunk = Mix_LoadWAV(file.c_str());
-    
+    Mix_Chunk *chunk = Mix_LoadWAV(file.c_str());
+
     if (!chunk) {
         std::cerr << "Falha ao carregar som" << Mix_GetError() << std::endl;
         return nullptr;
     }
-    
+
     soundTable.emplace(file, chunk);
     return chunk;
 }
 
 void Resources::ClearImages() {
-    for (auto& image : imageTable) {
+    for (auto &image : imageTable) {
         if (image.second != nullptr) {
             SDL_DestroyTexture(image.second);
         }
     }
-    
+
     imageTable.clear();
 }
 
 void Resources::ClearMusics() {
-    for (auto& music : musicTable) {
+    for (auto &music : musicTable) {
         if (music.second != nullptr) {
             Mix_FreeMusic(music.second);
         }
     }
-    
+
     musicTable.clear();
 }
 
 void Resources::ClearSounds() {
-    for (auto& sound : soundTable) {
+    for (auto &sound : soundTable) {
         if (sound.second != nullptr) {
             Mix_FreeChunk(sound.second);
         }
     }
-    
+
     soundTable.clear();
 }
