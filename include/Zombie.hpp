@@ -10,6 +10,7 @@
 
 #include "Component.hpp"
 #include "GameObject.hpp"
+#include "Sound.hpp"
 
 class Zombie : public Component {
 public:
@@ -22,6 +23,7 @@ public:
 
 private:
     int hitpoints;
+    Sound deathSound;
 };
 
 #endif /* Zombie_hpp */
