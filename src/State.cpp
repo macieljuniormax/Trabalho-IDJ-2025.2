@@ -26,16 +26,16 @@ void State::LoadAssets() {
     music.Open("resources/audio/BGM.wav");
 
     /* Background */
-//    GameObject* background = new GameObject();
-//
-//    background -> box.x = 0;
-//    background -> box.y = 0;
-//    background -> box.w = 1200;
-//    background -> box.h = 900;
-//
-//    background -> AddComponent(new SpriteRenderer(*background, "resources/img/Background.png"));
-//
-//    AddObject(background);
+    GameObject* background = new GameObject();
+
+    background -> box.x = 0;
+    background -> box.y = 0;
+    background -> box.w = 1200;
+    background -> box.h = 900;
+
+    background -> AddComponent(new SpriteRenderer(*background, "resources/img/Background.png"));
+
+    AddObject(background);
     
     /* Mapa (TileMap) */
     GameObject* mapGO = new GameObject();
@@ -54,7 +54,7 @@ void State::LoadAssets() {
     Zombie* zombie = new Zombie(*zombieGO);
     
     zombieGO -> box.x = 600;
-    zombieGO -> box.y = 600;
+    zombieGO -> box.y = 450;
 
     zombieGO -> AddComponent(zombie);
     

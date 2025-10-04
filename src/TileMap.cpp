@@ -101,7 +101,7 @@ void TileMap::RenderLayer(int layer) {
         for (std::size_t x = 0; x < mapWidth; ++x) {
             const int tileIndex = At(static_cast<int>(x), static_cast<int>(y), layer);
             
-            if (tileIndex) {
+            if (tileIndex >= 0) {
                 const int drawX = associated.box.x + x * tileWidh;
                 const int drawY = associated.box.y + y * tileHeight;
                 tileSet -> RenderTile(tileIndex, drawX, drawY);
