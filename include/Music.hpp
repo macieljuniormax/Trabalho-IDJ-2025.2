@@ -17,7 +17,7 @@
 class Music {
 public:
     Music();
-    Music(std::string file);
+    Music(const std::string& file);
     ~Music();
     
     void Play(int times = -1);

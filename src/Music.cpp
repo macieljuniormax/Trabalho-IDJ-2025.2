@@ -11,7 +11,7 @@
 
 Music::Music() : music(nullptr){}
 
-Music::Music(std::string file) : music(nullptr) {
+Music::Music(const std::string& file) : Music() {
     Open(file);
 }
 
