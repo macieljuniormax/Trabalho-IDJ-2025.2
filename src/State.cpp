@@ -49,16 +49,24 @@ void State::LoadAssets() {
     
     AddObject(mapGO);
     
-    /* Zombie */
-    GameObject* zombieGO = new GameObject();
-    Zombie* zombie = new Zombie(*zombieGO);
-    
-    zombieGO -> box.x = 600;
-    zombieGO -> box.y = 450;
+    /* Zombies */
+    GameObject* zombieGO1 = new GameObject();
+    zombieGO1->box.x = 600;
+    zombieGO1->box.y = 450;
+    zombieGO1->AddComponent(new Zombie(*zombieGO1));
+    AddObject(zombieGO1);
 
-    zombieGO -> AddComponent(zombie);
-    
-    AddObject(zombieGO);
+    GameObject* zombieGO2 = new GameObject();
+    zombieGO2->box.x = 400;
+    zombieGO2->box.y = 250;
+    zombieGO2->AddComponent(new Zombie(*zombieGO2));
+    AddObject(zombieGO2);
+
+    GameObject* zombieGO3 = new GameObject();
+    zombieGO3->box.x = 800;
+    zombieGO3->box.y = 120;
+    zombieGO3->AddComponent(new Zombie(*zombieGO3));
+    AddObject(zombieGO3);
 }
 
 void State::Update(float dt) {
