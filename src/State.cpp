@@ -38,7 +38,7 @@ void State::LoadAssets() {
 
     /* Mapa (TileMap) */
     GameObject *mapGO = new GameObject();
-    TileSet *tileSet = new TileSet(64, 64, "resources/img/TileSet.png");
+    TileSet *tileSet = new TileSet(64, 64, "resources/img/Tileset.png");
     TileMap *tileMap = new TileMap(*mapGO, "resources/map/map.txt", tileSet);
 
     mapGO->box.x = 0;
