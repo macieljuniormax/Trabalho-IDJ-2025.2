@@ -18,7 +18,6 @@ Sound::Sound(const std::string& file) : Sound() {
 Sound::~Sound() {
     if (chunk != nullptr) {
         Mix_HaltChannel(channel);
-        Mix_FreeChunk(chunk);
         chunk = nullptr;
     }
 }

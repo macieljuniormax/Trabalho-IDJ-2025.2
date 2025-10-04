@@ -22,7 +22,7 @@ public:
     
     void Play(int times = -1);
     void Stop(int msToStop = 1500);
-    void Open(std::string file);
+    void Open(const std::string& file);
     bool IsOpen();
     
 private:

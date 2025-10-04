@@ -6,6 +6,7 @@
 //
 
 #include "Game.hpp"
+#include "Resources.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -96,6 +97,10 @@ void Game::Run() {
         SDL_RenderPresent(renderer);
         SDL_Delay(33);
     }
+    
+    Resources::ClearImages();
+    Resources::ClearMusics();
+    Resources::ClearSounds();
 }
 
 
