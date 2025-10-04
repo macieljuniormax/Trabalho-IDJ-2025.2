@@ -23,7 +23,10 @@ public:
     void Load(std::string file);
     void SetTileSet(TileSet* tileSet);
     int& At(int x, int y, int z = 0);
-    void Render();
+    
+    void Render() override;
+    void Update(float dt) override;
+    
     void RenderLayer(int layer);
     
     int GetWidth() const { return mapWidth; };

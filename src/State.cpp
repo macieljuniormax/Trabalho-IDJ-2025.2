@@ -8,6 +8,8 @@
 #include "State.hpp"
 #include "SpriteRenderer.hpp"
 #include "Zombie.hpp"
+#include "TileMap.hpp"
+#include "TileSet.hpp"
 
 #include <cstddef>
 
@@ -24,17 +26,28 @@ void State::LoadAssets() {
     music.Open("resources/audio/BGM.wav");
 
     /* Background */
-    GameObject* background = new GameObject();
-
-    background -> box.x = 0;
-    background -> box.y = 0;
-    background -> box.w = 1200;
-    background -> box.h = 900;
-
-    background -> AddComponent(new SpriteRenderer(*background, "resources/img/Background.png"));
-
-    AddObject(background);
+//    GameObject* background = new GameObject();
+//
+//    background -> box.x = 0;
+//    background -> box.y = 0;
+//    background -> box.w = 1200;
+//    background -> box.h = 900;
+//
+//    background -> AddComponent(new SpriteRenderer(*background, "resources/img/Background.png"));
+//
+//    AddObject(background);
     
+    /* Mapa (TileMap) */
+    GameObject* mapGO = new GameObject();
+    TileSet* tileSet = new TileSet(64, 64, "resources/img/TileSet.png");
+    TileMap* tileMap = new TileMap(*mapGO, "resources/map/map.txt", tileSet);
+    
+    mapGO -> box.x = 0;
+    mapGO -> box.y = 0;
+    
+    mapGO -> AddComponent(tileMap);
+    
+    AddObject(mapGO);
     
     /* Zombie */
     GameObject* zombieGO = new GameObject();

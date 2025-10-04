@@ -78,6 +78,16 @@ int& TileMap::At(int x, int y, int z) {
     return tileMatrix[index];
 }
 
+void TileMap::Render() {
+    for (int layer = 0; layer < mapDeth; ++layer) {
+        RenderLayer(layer);
+    }
+}
+
+void TileMap::Update(float dt) {
+    
+}
+
 void TileMap::RenderLayer(int layer) {
     if (!tileSet) {
         std::cerr << "TileSet não definido" << std::endl;
@@ -100,8 +110,4 @@ void TileMap::RenderLayer(int layer) {
     }
 }
 
-void TileMap::Render() {
-    for (int layer = 0; layer < mapDeth; ++layer) {
-        RenderLayer(layer);
-    }
-}
+
