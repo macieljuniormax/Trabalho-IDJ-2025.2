@@ -32,6 +32,18 @@ As principais classes e alterações implementadas foram:
 
 Essas mudanças permitiram criar o **primeiro personagem animado** do jogo.
 
+## 🧩 Trabalho 3 – TileSet, TileMap e Resource Management
+
+As principais classes e modificações implementadas foram:
+
+- **TileSet**:Responsável por armazenar e recortar tiles a partir de uma imagem base, permitindo renderizar blocos individuais no mapa.
+- **TileMap**: Simula uma matriz tridimensional de índices de tiles, controlando as camadas e a disposição dos tiles na tela a partir de um arquivo `map.txt`.
+- **Sound**: Classe similar à `Music`, mas voltada a efeitos sonoros curtos. Cada instância controla seu próprio canal de áudio e permite tocar, parar e carregar sons independentes.
+- **Resources**: Gerenciador central de recursos do jogo. Mantém tabelas de *hash* (`unordered_map`) que armazenam texturas, músicas e sons já carregados, evitando carregamentos repetidos e liberando memória de forma centralizada.
+- **Sprite**: Atualizada para usar o `Resources` em vez de carregar texturas diretamente. Agora, uma mesma imagem é compartilhada entre múltiplos objetos.
+- **Zombie**: Agora possui um som de morte (`deathSound`), tocado quando seus pontos de vida chegam a zero.
+- **State**: Atualizada para incluir o carregamento de um `TileMap` e a criação de múltiplos zumbis na cena.
+
 ## 👤 Autor
 - **Maciel Ferreira Custódio Júnior**
   - Matrícula: 190100087
