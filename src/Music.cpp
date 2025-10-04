@@ -6,20 +6,17 @@
 //
 
 #include "Music.hpp"
+#include "Resources.hpp"
 
 #include <iostream>
 
-Music::Music() : music(nullptr){}
+Music::Music() : music(nullptr) {}
 
-Music::Music(std::string file) : music(nullptr) {
-    Open(file);
-}
+Music::Music(const std::string &file) : Music() { Open(file); }
 
 Music::~Music() {
-    if (music != nullptr) {
-        Stop();
-        Mix_FreeMusic(music);
-    }
+    Stop();
+    music = nullptr;
 }
 
 void Music::Play(int times) {
@@ -27,9 +24,10 @@ void Music::Play(int times) {
         std::cerr << "Erro: nenhuma música carregada" << std::endl;
         return;
     }
-    
-    if (Mix_PlayMusic(music, times)  == -1) {
-        std::cerr << "Erro ao reproduzir música: " << Mix_GetError() << std::endl;
+
+    if (Mix_PlayMusic(music, times) == -1) {
+        std::cerr << "Erro ao reproduzir música: " << Mix_GetError()
+                  << std::endl;
     }
 }
 
@@ -38,26 +36,18 @@ void Music::Stop(int msToStop) {
         std::cerr << "Erro: nenhuma música carregada" << std::endl;
         return;
     }
-    
+
     if (Mix_FadeOutMusic(msToStop) == 0) {
         std::cerr << "Erro: nenhuma música em execução" << std::endl;
     }
 }
 
-void Music::Open(std::string file) {
-    if (IsOpen()) {
-        Mix_FreeMusic(music);
-        music = nullptr;
-    }
-    
-    music = Mix_LoadMUS(file.c_str());
+void Music::Open(const std::string &file) {
+    music = Resources::GetMusic(file);
+
     if (music == nullptr) {
         std::cerr << "Erro ao carregar música: " << Mix_GetError() << std::endl;
     }
 }
 
-bool Music::IsOpen() {
-    return music != nullptr;
-}
-
-
+bool Music::IsOpen() { return music != nullptr; }

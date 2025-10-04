@@ -18,24 +18,24 @@
 #include "SDL_include.h"
 
 class Game {
-public:
+  public:
     ~Game();
 
     void Run();
 
-    SDL_Renderer* GetRenderer();
-    State& GetState();
-    static Game& GetInstance();
+    SDL_Renderer *GetRenderer();
+    State &GetState();
+    static Game &GetInstance();
 
-private:
+  private:
     Game(std::string title, int width, int height);
 
-    static Game* instance;
+    static Game *instance;
 
-    SDL_Window* window;
-    SDL_Renderer* renderer;
+    SDL_Window *window;
+    SDL_Renderer *renderer;
 
-    State* state;
+    State *state;
 };
 
 #endif /* Game_hpp */

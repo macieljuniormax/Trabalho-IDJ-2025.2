@@ -9,9 +9,9 @@
 #define Animation_hpp
 
 class Animation {
-public:
+  public:
     Animation(int frameStart, int frameEnd, float frameTime);
-    
+
     int frameStart;
     int frameEnd;
     float frameTime;
