@@ -6,8 +6,8 @@
 //
 
 #include "Game.hpp"
-#include "Resources.hpp"
 #include "InputManager.hpp"
+#include "Resources.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -29,8 +29,6 @@ Game::Game(std::string title, int width, int height) {
                   << std::endl;
         exit(1);
     }
-
-    instance = this;
 
     try {
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0) {
@@ -59,25 +57,29 @@ Game::Game(std::string title, int width, int height) {
         }
 
         Mix_AllocateChannels(32);
+        
+        window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED,
+                                  SDL_WINDOWPOS_CENTERED, width, height, 0);
+        if (window == nullptr) {
+            throw std::runtime_error(std::string("Erro ao criar janela: ") +
+                                     SDL_GetError());
+        }
+
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        if (renderer == nullptr) {
+            throw std::runtime_error(std::string("Erro ao renderizar: ") +
+                                     SDL_GetError());
+        }
+        
+        frameStart = (int)SDL_GetTicks();
+        dt = 0.0f;
+
+        instance = this;
+        state = new State();
     } catch (const std::exception &exception) {
         std::cerr << exception.what() << std::endl;
         exit(1);
     }
-
-    window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED,
-                              SDL_WINDOWPOS_CENTERED, width, height, 0);
-    if (window == nullptr) {
-        throw std::runtime_error(std::string("Erro ao criar janela: ") +
-                                 SDL_GetError());
-    }
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (renderer == nullptr) {
-        throw std::runtime_error(std::string("Erro ao renderizar: ") +
-                                 SDL_GetError());
-    }
-
-    state = new State();
 }
 
 Game::~Game() {
@@ -100,8 +102,9 @@ SDL_Renderer *Game::GetRenderer() { return renderer; }
 
 void Game::Run() {
     while (!state->QuitRequested()) {
+        CalculaDeltaTime();
         InputManager::GetInstance().Update();
-        state->Update(0);
+        state->Update(GetDeltaTime());
         state->Render();
         SDL_RenderPresent(renderer);
         SDL_Delay(33);
@@ -111,3 +114,12 @@ void Game::Run() {
     Resources::ClearMusics();
     Resources::ClearSounds();
 }
+
+void Game::CalculaDeltaTime() {
+    const int now = (int)SDL_GetTicks();
+    dt = (now - frameStart / 1000.0f);
+
+    frameStart = now;
+}
+
+float Game::GetDeltaTime() { return dt; }
