@@ -13,8 +13,8 @@
 GameObject::GameObject() { isDead = false; }
 
 GameObject::~GameObject() {
-    for (std::size_t i = components.size() - 1; i >= 0; i--) {
-        delete *(components.begin() + i);
+    for (auto it = components.rbegin(); it != components.rend(); ++it) {
+        delete *it;
     }
 
     components.clear();

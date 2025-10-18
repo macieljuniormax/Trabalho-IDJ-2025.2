@@ -117,7 +117,7 @@ void Game::Run() {
 
 void Game::CalculaDeltaTime() {
     const int now = (int)SDL_GetTicks();
-    dt = (now - frameStart / 1000.0f);
+    dt = (now - frameStart) / 1000.0f;
 
     frameStart = now;
 }
