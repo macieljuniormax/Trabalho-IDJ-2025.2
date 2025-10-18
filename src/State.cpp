@@ -10,6 +10,7 @@
 #include "TileMap.hpp"
 #include "TileSet.hpp"
 #include "Zombie.hpp"
+#include "InputManager.hpp"
 
 #include <cstddef>
 
@@ -47,32 +48,26 @@ void State::LoadAssets() {
     mapGO->AddComponent(tileMap);
 
     AddObject(mapGO);
-
-    /* Zombies */
-    GameObject *zombieGO1 = new GameObject();
-    zombieGO1->box.x = 600;
-    zombieGO1->box.y = 450;
-    zombieGO1->AddComponent(new Zombie(*zombieGO1));
-    AddObject(zombieGO1);
-
-    GameObject *zombieGO2 = new GameObject();
-    zombieGO2->box.x = 400;
-    zombieGO2->box.y = 250;
-    zombieGO2->AddComponent(new Zombie(*zombieGO2));
-    AddObject(zombieGO2);
-
-    GameObject *zombieGO3 = new GameObject();
-    zombieGO3->box.x = 800;
-    zombieGO3->box.y = 120;
-    zombieGO3->AddComponent(new Zombie(*zombieGO3));
-    AddObject(zombieGO3);
 }
 
 void State::Update(float dt) {
-    if (SDL_QuitRequested()) {
+    auto& input = InputManager::GetInstance();
+    
+    if (input.QuitRequested() || input.KeyPress(ESCAPE_KEY)) {
         quitRequested = true;
     }
-
+    
+    if (input.KeyPress(SPACE_KEY)) {
+        int mouse_x = input.GetMouseX();
+        int mouse_y = input.GetMouseY();
+        
+        GameObject *zombie = new GameObject();
+        zombie->box.x = mouse_x;
+        zombie->box.y = mouse_y;
+        zombie->AddComponent(new Zombie(*zombie));
+        AddObject(zombie);
+    }
+    
     for (std::size_t i = 0; i < objectArray.size(); i++) {
         objectArray[i]->Update(dt);
     }

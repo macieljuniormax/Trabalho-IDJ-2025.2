@@ -7,6 +7,7 @@
 
 #include "Game.hpp"
 #include "Resources.hpp"
+#include "InputManager.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -99,6 +100,7 @@ SDL_Renderer *Game::GetRenderer() { return renderer; }
 
 void Game::Run() {
     while (!state->QuitRequested()) {
+        InputManager::GetInstance().Update();
         state->Update(0);
         state->Render();
         SDL_RenderPresent(renderer);

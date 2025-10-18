@@ -23,6 +23,8 @@ class Zombie : public Component {
 
   private:
     int hitpoints;
+    
+    Sound hitSound;
     Sound deathSound;
 };
 
