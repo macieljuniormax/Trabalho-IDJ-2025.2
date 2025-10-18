@@ -11,6 +11,7 @@
 #include "Component.hpp"
 #include "GameObject.hpp"
 #include "Sound.hpp"
+#include "Timer.hpp"
 
 class Zombie : public Component {
   public:
@@ -23,9 +24,14 @@ class Zombie : public Component {
 
   private:
     int hitpoints;
+    bool hit;
+    bool dead;
     
     Sound hitSound;
     Sound deathSound;
+    
+    Timer hitTimer;
+    Timer deathTimer;
 };
 
 #endif /* Zombie_hpp */

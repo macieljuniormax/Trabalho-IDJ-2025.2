@@ -16,7 +16,7 @@ void Animator::Update(float dt) {
     if (frameTime == 0.0f)
         return;
 
-    timeElapsed += 1.0f;
+    timeElapsed += dt;
 
     if (timeElapsed > frameTime) {
         currentFrame++;
