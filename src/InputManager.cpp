@@ -5,10 +5,6 @@
 //  Created by Maciel Ferreira Custódio Júnior on 16/10/25.
 //
 
-#define INCLUDE_SDL_IMAGE
-#define INCLUDE_SDL_MIXER
-
-#include "SDL_include.h"
 #include "InputManager.hpp"
 
 static int ToMouseIndex(Uint8 sdlbutton) {

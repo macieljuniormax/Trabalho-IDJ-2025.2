@@ -8,6 +8,10 @@
 #ifndef InputManager_hpp
 #define InputManager_hpp
 
+#define INCLUDE_SDL_IMAGE
+#define INCLUDE_SDL_MIXER
+
+#include "SDL_include.h"
 #include <unordered_map>
 
 class InputManager {

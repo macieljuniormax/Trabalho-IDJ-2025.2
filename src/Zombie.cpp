@@ -9,6 +9,7 @@
 #include "Animator.hpp"
 #include "InputManager.hpp"
 #include "SpriteRenderer.hpp"
+#include "Camera.hpp"
 
 Zombie::Zombie(GameObject &associated)
     : Component(associated), hitpoints(100), hit(false), dead(false),
@@ -74,8 +75,8 @@ void Zombie::Update(float dt) {
     auto &input = InputManager::GetInstance();
 
     if (input.MousePress(LEFT_MOUSE_BUTTON)) {
-        int mouse_x = input.GetMouseX();
-        int mouse_y = input.GetMouseY();
+        int mouse_x = Camera::pos.x + input.GetMouseX();
+        int mouse_y = Camera::pos.y + input.GetMouseY();
 
         const bool isInside = (mouse_x >= associated.box.x &&
                                mouse_x <= associated.box.x + associated.box.w &&

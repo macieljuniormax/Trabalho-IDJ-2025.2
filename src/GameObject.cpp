@@ -15,7 +15,7 @@ GameObject::GameObject() { isDead = false; }
 GameObject::~GameObject() {
     for (auto it = components.rbegin(); it != components.rend(); ++it) {
         delete *it;
-    }
+    }                                                                                                                                                                                              
 
     components.clear();
 }

@@ -11,6 +11,7 @@
 #include "TileSet.hpp"
 #include "Zombie.hpp"
 #include "InputManager.hpp"
+#include "Camera.hpp"
 
 #include <cstddef>
 
@@ -51,6 +52,8 @@ void State::LoadAssets() {
 }
 
 void State::Update(float dt) {
+    Camera::Update(dt);
+    
     auto& input = InputManager::GetInstance();
     
     if (input.QuitRequested() || input.KeyPress(ESCAPE_KEY)) {
@@ -58,8 +61,8 @@ void State::Update(float dt) {
     }
     
     if (input.KeyPress(SPACE_KEY)) {
-        int mouse_x = input.GetMouseX();
-        int mouse_y = input.GetMouseY();
+        int mouse_x = Camera::pos.x + input.GetMouseX();
+        int mouse_y = Camera::pos.y + input.GetMouseY();
         
         GameObject *zombie = new GameObject();
         zombie->box.x = mouse_x;
