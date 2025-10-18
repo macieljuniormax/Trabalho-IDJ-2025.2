@@ -27,8 +27,8 @@ void Camera::Unfollow() {
 }
 
 void Camera::Update(float dt) {
-    const float mapW = 2560.0f;
-    const float mapH = 2544.0f;
+//    const float mapW = 2560.0f;
+//    const float mapH = 2544.0f;
     
     if (focus) {
         if (focus->IsDead()) {
@@ -36,9 +36,9 @@ void Camera::Update(float dt) {
         } else {
             pos.x = (focus->box.x + focus->box.w / 2.0f) - ViewW() * 0.5f;
             pos.y = (focus->box.y + focus->box.h / 2.0f) - ViewH() * 0.5f;
-
-            pos.x = std::clamp(pos.x, 0.0f, mapW - ViewW());
-            pos.y = std::clamp(pos.y, 0.0f, mapH - ViewH());
+            
+            pos.x += speed.x * dt;
+            pos.y += speed.y * dt;
             return;
         }
     }
@@ -53,7 +53,7 @@ void Camera::Update(float dt) {
 
     speed.x = dir.x * 200;
     speed.y = dir.y * 200;
-
-    pos.x = std::clamp(pos.x + speed.x * dt, 0.0f, mapW - ViewW());
-    pos.y = std::clamp(pos.y + speed.y * dt, 0.0f, mapH - ViewH());
+    
+    pos.x += speed.x * dt;
+    pos.y += speed.y * dt;
 }

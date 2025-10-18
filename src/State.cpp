@@ -32,10 +32,11 @@ void State::LoadAssets() {
     background->box.y = 0;
     background->box.w = 1200;
     background->box.h = 900;
-
-    background->AddComponent(
-        new SpriteRenderer(*background, "resources/img/Background.png"));
-
+    
+    SpriteRenderer *backgroundSR = new SpriteRenderer(*background, "resources/img/Background.png");
+    
+    backgroundSR->SetCameraFollower(true);
+    background->AddComponent(backgroundSR);
     AddObject(background);
 
     /* Mapa (TileMap) */

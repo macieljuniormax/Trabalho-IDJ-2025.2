@@ -6,16 +6,17 @@
 //
 
 #include "Sprite.hpp"
+#include "Camera.hpp"
 #include "Game.hpp"
 #include "Resources.hpp"
-#include "Camera.hpp"
 #include <iostream>
 
 Sprite::Sprite()
-    : texture(nullptr), width(0), height(0), frameCountW(1), frameCountH(1) {}
+    : texture(nullptr), width(0), height(0), frameCountW(1), frameCountH(1),
+      cameraFollower(false) {}
 
 Sprite::Sprite(std::string file, int frameCountW, int frameCountH)
-    : texture(nullptr), width(0), height(0) {
+    : texture(nullptr), width(0), height(0), cameraFollower(false) {
     this->frameCountW = (frameCountW > 0 ? frameCountW : 1);
     this->frameCountH = (frameCountH > 0 ? frameCountH : 1);
     Open(file);
@@ -44,8 +45,15 @@ void Sprite::SetClip(int x, int y, int w, int h) {
 
 void Sprite::Render(int x, int y, int w, int h) {
     SDL_Rect dstrect;
-    dstrect.x = x - Camera::pos.x;
-    dstrect.y = y - Camera::pos.y;
+    
+    if (cameraFollower) {
+        dstrect.x = x;
+        dstrect.y = y;
+    } else {
+        dstrect.x = x - Camera::pos.x;
+        dstrect.y = y - Camera::pos.y;
+    }
+    
     dstrect.w = w;
     dstrect.h = h;
 

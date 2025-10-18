@@ -25,6 +25,8 @@ class SpriteRenderer : public Component {
     void Update(float dt) override;
     void Render() override;
     void SetFrame(int frame);
+    
+    void SetCameraFollower(bool on) { sprite.SetCameraFollower(on); };
 
   private:
     Sprite sprite;

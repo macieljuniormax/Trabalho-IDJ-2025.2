@@ -28,6 +28,8 @@ class Sprite {
     bool IsOpen();
     void SetFrame(int frame);
     void SetFrameCount(int frameCountW, int frameCountH);
+    
+    void SetCameraFollower(bool on) { cameraFollower = on; };
 
   private:
     int width;
@@ -36,6 +38,8 @@ class Sprite {
     int frameCountH;
     SDL_Texture *texture;
     SDL_Rect clipRect;
+    
+    bool cameraFollower;
 };
 
 #endif /* Sprite_hpp */
