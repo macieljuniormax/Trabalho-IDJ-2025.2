@@ -32,6 +32,8 @@ class TileMap : public Component {
     int GetWidth() const { return mapWidth; };
     int GetHeight() const { return mapHeight; };
     int GetDepth() const { return mapDeth; };
+    
+    void SetParallax(int layer, float px, float py);
 
   private:
     std::vector<int> tileMatrix;
@@ -39,6 +41,9 @@ class TileMap : public Component {
     int mapWidth;
     int mapHeight;
     int mapDeth;
+    
+    std::vector<float> parallaxX;
+    std::vector<float> parallaxY;
 };
 
 #endif /* TileMap_hpp */

@@ -43,6 +43,9 @@ void State::LoadAssets() {
     GameObject *mapGO = new GameObject();
     TileSet *tileSet = new TileSet(64, 64, "resources/img/Tileset.png");
     TileMap *tileMap = new TileMap(*mapGO, "resources/map/map.txt", tileSet);
+    
+    tileMap->SetParallax(0, 0.3f, 0.3f);
+    tileMap->SetParallax(1, 1.0f, 1.0f);
 
     mapGO->box.x = 0;
     mapGO->box.y = 0;

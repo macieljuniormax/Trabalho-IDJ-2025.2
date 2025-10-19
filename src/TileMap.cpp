@@ -6,10 +6,14 @@
 //
 
 #include "TileMap.hpp"
-
+#include "Camera.hpp"
 #include <cstddef>
 #include <fstream>
 #include <iostream>
+
+
+static inline int ViewW() { return 1200; }
+static inline int ViewH() { return 900; }
 
 TileMap::TileMap(GameObject &associated, const std::string &file,
                  TileSet *tileSet)
@@ -34,6 +38,9 @@ void TileMap::Load(const std::string file) {
     if (!(in >> mapWidth >> comma >> mapHeight >> comma >> mapDeth >> comma)) {
         std::cerr << "Dimensões inválidas" << std::endl;
     }
+    
+    parallaxX.assign(mapDeth, 1.0f);
+    parallaxY.assign(mapDeth, 1.0f);
 
     tileMatrix.clear();
     tileMatrix.reserve(mapWidth * mapHeight * mapDeth);
@@ -86,20 +93,38 @@ void TileMap::RenderLayer(int layer) {
         std::cerr << "TileSet não definido" << std::endl;
         return;
     }
+    
+    if (layer < 0 || layer >= mapDeth) return;
 
     const int tileWidh = tileSet->GetTileWidth();
     const int tileHeight = tileSet->GetTileHeight();
+    
+    const float px = (layer < (int)parallaxX.size()) ? parallaxX[layer] : 1.0f;
+    const float py = (layer < (int)parallaxY.size()) ? parallaxY[layer] : 1.0f;
 
     for (std::size_t y = 0; y < mapHeight; ++y) {
         for (std::size_t x = 0; x < mapWidth; ++x) {
             const int tileIndex =
                 At(static_cast<int>(x), static_cast<int>(y), layer);
+            
+            if (tileIndex < 0) continue;
 
-            if (tileIndex >= 0) {
-                const int drawX = associated.box.x + x * tileWidh;
-                const int drawY = associated.box.y + y * tileHeight;
-                tileSet->RenderTile(tileIndex, drawX, drawY);
-            }
+            const int drawX = (associated.box.x + x * tileWidh) - Camera::pos.x * px;
+            const int drawY = (associated.box.y + y * tileHeight) - Camera::pos.y * py;
+            
+            tileSet->RenderTile(tileIndex, drawX, drawY);
         }
     }
+}
+
+void TileMap::SetParallax(int layer, float px, float py) {
+    if (layer < 0 || layer >= mapDeth) return;
+    
+    if (parallaxX.size() != mapDeth) {
+        parallaxX.assign(mapDeth, 1.0f);
+        parallaxY.assign(mapDeth, 1.0f);
+    }
+    
+    parallaxX[layer] = px;
+    parallaxY[layer] = py;
 }
