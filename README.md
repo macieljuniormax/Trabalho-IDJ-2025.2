@@ -9,6 +9,7 @@ Cada trabalho será versionado em **releases independentes no GitHub**.
 ---
 
 ## 🎮 Trabalho 1 – Game Loop, Sprite e Music
+
 As principais classes implementadas foram:
 
 - **Game**: responsável pelo *game loop* principal, inicialização da SDL e gerenciamento do estado do jogo (Singleton).
@@ -18,6 +19,7 @@ As principais classes implementadas foram:
 - **Main**: ponto de entrada do programa, instanciando `Game` e iniciando a execução.
 
 ## 🧟 Trabalho 2 – GameObject, Componentes e Animações
+
 As principais classes e alterações implementadas foram:
 
 - **Rect**: estrutura auxiliar para representar posição e dimensões.
@@ -44,7 +46,19 @@ As principais classes e modificações implementadas foram:
 - **Zombie**: Agora possui um som de morte (`deathSound`), tocado quando seus pontos de vida chegam a zero.
 - **State**: Atualizada para incluir o carregamento de um `TileMap` e a criação de múltiplos zumbis na cena.
 
+## 🕹️ Trabalho 4 – Input, Temporização e Câmera
+
+As principais classes e modificações implementadas foram:
+
+- **InputManager**: singleton responsável por centralizar e abstrair os eventos da SDL. Ele captura e armazena o estado das teclas e botões do mouse, permitindo consultar se uma tecla foi pressionada, solta ou está mantida. Substitui o tratamento direto de eventos nas classes, simplificando o controle de entrada.
+- **Timer**: contador de tempo genérico utilizado para medir intervalos (`dt`) entre frames. Serve para controlar animações, delays e lógica temporal no jogo.
+- **Game**: adicionados `frameStart`, `dt`, `CalculateDeltaTime()` e `GetDeltaTime()`, permitindo calcular o tempo entre frames e atualizar os objetos proporcionalmente.
+- **Camera**: adicionada classe que define a posição da câmera no mundo e controla seu movimento.
+- **CameraFollower (SpriteRenderer)**: novo atributo `cameraFollower` para sprites que devem ignorar o deslocamento da câmera (como o background).
+- **TileMap – Parallax Scrolling (feature extra)**: implementação de deslocamento diferencial das camadas do mapa, criando efeito de profundidade. C
+
 ## 👤 Autor
+
 - **Maciel Ferreira Custódio Júnior**
   - Matrícula: 190100087
   - [GitHub](https://github.com/macieljuniormax)
