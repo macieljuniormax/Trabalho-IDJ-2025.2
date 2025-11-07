@@ -27,7 +27,7 @@ class Character : public Component {
         Vec2 pos;
     };
 
-    Character(GameObject &associeated, std::string &sprite);
+    Character(GameObject &associated, const std::string &sprite);
     ~Character() override;
 
     void Start() override;

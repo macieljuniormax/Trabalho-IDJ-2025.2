@@ -6,3 +6,28 @@
 //
 
 #include "Character.hpp"
+#include "Animator.hpp"
+#include "SpriteRenderer.hpp"
+
+Character *Character::player = nullptr;
+
+Character::Character(GameObject &associated, const std::string &sprite)
+    : Component(associated), gun(), taskQueue(), speed(0.0f, 0.0f),
+      linearSpeed(200.0f), hp(100), deathTimer() {
+
+    SpriteRenderer *personagem = new SpriteRenderer(associated, sprite, 3, 2);
+    associated.AddComponent(personagem);
+
+    Animator *animator = new Animator(associated);
+    associated.AddComponent(animator);
+
+    animator->AddAnimation("idle", Animation(0, 5, 0.10f));
+    animator->AddAnimation("walking", Animation(6, 9, 0.10f));
+    animator->AddAnimation("dead", Animation(10, 11, 0.00f));
+
+    animator->SetAnimation("idle");
+
+    if (Character::player == nullptr) {
+        Character::player = this;
+    }
+}
