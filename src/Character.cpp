@@ -8,6 +8,10 @@
 #include "Character.hpp"
 #include "Animator.hpp"
 #include "SpriteRenderer.hpp"
+#include "State.hpp"
+#include "Game.hpp"
+#include "GameObject.hpp"
+#include "Gun.hpp"
 
 Character *Character::player = nullptr;
 
@@ -30,4 +34,24 @@ Character::Character(GameObject &associated, const std::string &sprite)
     if (Character::player == nullptr) {
         Character::player = this;
     }
+}
+
+Character::~Character() {
+    if (Character::player == this) {
+        Character::player = nullptr;
+    }
+}
+
+void Character::Start() {
+    State& state = Game::GetInstance().GetState();
+    std::weak_ptr<GameObject> self = state.GetObjectPtr(&associated);
+    
+    GameObject* gunGO = new GameObject();
+    
+    gunGO->box.x = associated.box.x;
+    gunGO->box.y = associated.box.y;
+    
+    gunGO->AddComponent(new Gun(*gunGO, self));
+    
+    gun = Game::GetInstance().GetState().AddObject(gunGO);
 }

@@ -49,9 +49,9 @@ void GameObject::AddComponent(Component *component) {
     }
 }
 
-void GameObject::RemoveComponent(Component *cpt) {
+void GameObject::RemoveComponent(Component *component) {
     for (auto it = components.begin(); it != components.end(); ++it) {
-        if (*it == cpt) {
+        if (*it == component) {
             delete *it;
             components.erase(it);
             break;
