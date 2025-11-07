@@ -26,10 +26,10 @@ void State::Start() {
 
     for (auto &sp : objectArray) {
         if (sp) {
-            //            sp->Start();
+            sp->Start();
         }
     }
-    
+
     started = true;
 }
 
@@ -112,20 +112,20 @@ bool State::QuitRequested() { return quitRequested; }
 std::weak_ptr<GameObject> State::AddObject(GameObject *go) {
     std::shared_ptr<GameObject> sp(go);
     objectArray.push_back(sp);
-    
+
     if (started && sp) {
-//        sp->Start()
+        //        sp->Start()
     }
-    
+
     return std::weak_ptr<GameObject>(sp);
 }
 
 std::weak_ptr<GameObject> State::GetObjectPtr(GameObject *go) {
-    for (auto& sp : objectArray) {
+    for (auto &sp : objectArray) {
         if (sp.get() == go) {
             return std::weak_ptr<GameObject>(sp);
         }
     }
-    
+
     return std::weak_ptr<GameObject>();
 }
