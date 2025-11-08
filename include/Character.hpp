@@ -14,6 +14,7 @@
 #include "Vec2.hpp"
 #include <queue>
 #include <string>
+#include <memory>
 
 class Character : public Component {
   public:
