@@ -32,6 +32,8 @@ class Animator : public Component {
     float frameTime;
     int currentFrame;
     float timeElapsed;
+
+    std::string current;
 };
 
 #endif /* Animator_hpp */

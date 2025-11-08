@@ -17,10 +17,12 @@ class Component;
 class GameObject {
   public:
     Rect box;
+    double angleDeg;
 
     GameObject();
     ~GameObject();
 
+    void Start();
     void Update(float dt);
     void Render();
     bool IsDead();
@@ -43,6 +45,7 @@ class GameObject {
   private:
     std::vector<Component *> components;
     bool isDead;
+    bool started;
 };
 
 #endif /* GameObject_hpp */

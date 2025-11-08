@@ -10,14 +10,19 @@
 
 #include <cstddef>
 
-GameObject::GameObject() { isDead = false; }
+GameObject::GameObject() : isDead(false), started(false), angleDeg(0.0f) {}
 
 GameObject::~GameObject() {
     for (auto it = components.rbegin(); it != components.rend(); ++it) {
         delete *it;
-    }                                                                                                                                                                                              
-
+    }
     components.clear();
+}
+
+void GameObject::Start() {
+    for (auto *component : components) {
+        component->Start();
+    }
 }
 
 void GameObject::Update(float dt) {
@@ -36,11 +41,17 @@ bool GameObject::IsDead() { return isDead; }
 
 void GameObject::RequestDelete() { isDead = true; }
 
-void GameObject::AddComponent(Component *cpt) { components.push_back(cpt); }
+void GameObject::AddComponent(Component *component) {
+    components.push_back(component);
 
-void GameObject::RemoveComponent(Component *cpt) {
+    if (started) {
+        component->Start();
+    }
+}
+
+void GameObject::RemoveComponent(Component *component) {
     for (auto it = components.begin(); it != components.end(); ++it) {
-        if (*it == cpt) {
+        if (*it == component) {
             delete *it;
             components.erase(it);
             break;

@@ -7,8 +7,9 @@
 
 #include "Animation.hpp"
 
-Animation::Animation(int frameStart, int frameEnd, float frameTime) {
-    this->frameStart = frameStart;
-    this->frameEnd = frameEnd;
-    this->frameTime = frameTime;
-}
+Animation::Animation(int frameStart, int frameEnd, float frameTime,
+                     SDL_RendererFlip flip)
+    : frameStart(frameStart),
+      frameEnd(frameEnd),
+      frameTime(frameTime),
+      flip(flip) {}

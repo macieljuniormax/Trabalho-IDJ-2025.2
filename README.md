@@ -55,7 +55,20 @@ As principais classes e modificações implementadas foram:
 - **Game**: adicionados `frameStart`, `dt`, `CalculateDeltaTime()` e `GetDeltaTime()`, permitindo calcular o tempo entre frames e atualizar os objetos proporcionalmente.
 - **Camera**: adicionada classe que define a posição da câmera no mundo e controla seu movimento.
 - **CameraFollower (SpriteRenderer)**: novo atributo `cameraFollower` para sprites que devem ignorar o deslocamento da câmera (como o background).
-- **TileMap – Parallax Scrolling (feature extra)**: implementação de deslocamento diferencial das camadas do mapa, criando efeito de profundidade. C
+- **TileMap – Parallax Scrolling**: implementação de deslocamento diferencial das camadas do mapa, criando efeito de profundidade.
+
+## 🔫 Trabalho 5 – Personagem Jogável, Arma e Projéteis
+
+As principais classes e modificações implementadas foram:
+
+- **Character**: representa o personagem jogável. Possui sistema de comandos que abstrai ações como andar e atirar. Integra animações de idle, movimento e morte, além de gerenciar o estado de vida e interação com a arma.
+- **Gun**: componente que representa a arma do personagem. Controla o ciclo de tiro e recarga, reproduzindo sons e animações sincronizados.
+- **Bullet**: projétil genérico disparado pela arma. Move-se em linha reta a uma velocidade constante até percorrer uma distância máxima, sendo então removido automaticamente do jogo.
+- **PlayerController**: responsável por interpretar as entradas do teclado e mouse, convertendo-as em comandos para o player (movimentação e disparo).
+- **Animation (atualização)**: passou a suportar o parâmetro `SDL_RendererFlip`, permitindo espelhar animações horizontalmente ou verticalmente.
+- **Sprite / SpriteRenderer (atualização)**: adicionados suporte a rotação (`angleDeg`), escala (`scale`) e espelhamento (`flip`), com renderização via `SDL_RenderCopyEx`.
+- **GameObject**: adicionado o atributo `angleDeg` para representar o ângulo de rotação de cada objeto na tela.
+- **State**: criação do personagem jogável e de sua arma. Integra o `PlayerController` ao jogador e define o foco da câmera no personagem.
 
 ## 👤 Autor
 
