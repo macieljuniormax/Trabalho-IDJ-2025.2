@@ -17,6 +17,7 @@ class Component;
 class GameObject {
   public:
     Rect box;
+    double angleDeg;
 
     GameObject();
     ~GameObject();

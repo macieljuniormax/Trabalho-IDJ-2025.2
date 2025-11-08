@@ -10,7 +10,7 @@
 
 #include <cstddef>
 
-GameObject::GameObject() : isDead(false), started(false) {}
+GameObject::GameObject() : isDead(false), started(false), angleDeg(0.0f) {}
 
 GameObject::~GameObject() {
     for (auto it = components.rbegin(); it != components.rend(); ++it) {

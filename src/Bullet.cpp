@@ -18,6 +18,12 @@ Bullet::Bullet(GameObject &associated, float angle, float speedValue,
     SpriteRenderer *sprite =
         new SpriteRenderer(associated, "resources/img/Bullet.png");
     associated.AddComponent(sprite);
+
+    associated.angleDeg = angle * (180.0 / M_PI);
+
+    if (auto *sr = associated.GetComponent<SpriteRenderer>()) {
+        sr->SetScale(0.75f, 0.75);
+    }
 }
 
 void Bullet::Update(float dt) {

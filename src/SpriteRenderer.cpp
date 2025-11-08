@@ -28,8 +28,31 @@ void SpriteRenderer::SetFrameCount(int frameCountW, int frameCountH) {
 void SpriteRenderer::Update(float dt) {}
 
 void SpriteRenderer::Render() {
-    sprite.Render(associated.box.x, associated.box.y, associated.box.w,
-                  associated.box.h);
+    if (!sprite.IsOpen())
+        return;
+
+    const int w = sprite.GetWidth();
+    const int h = sprite.GetHeight();
+
+    sprite.Render(static_cast<int>(associated.box.x),
+                  static_cast<int>(associated.box.y), w, h,
+                  associated.angleDeg);
 }
 
-void SpriteRenderer::SetFrame(int frame) { sprite.SetFrame(frame); }
+void SpriteRenderer::SetScale(float sx, float sy) {
+    const float centerX = associated.box.x + associated.box.w * 0.5f;
+    const float centerY = associated.box.y + associated.box.h * 0.5f;
+
+    sprite.SetScale(sx, sy);
+
+    associated.box.w = static_cast<float>(sprite.GetWidth());
+    associated.box.h = static_cast<float>(sprite.GetHeight());
+
+    associated.box.x = centerX - associated.box.w * 0.5f;
+    associated.box.y = centerY - associated.box.h * 0.5f;
+}
+
+void SpriteRenderer::SetFrame(int frame, SDL_RendererFlip flip) {
+    sprite.SetFrame(frame);
+    sprite.SetFlip(flip);
+}

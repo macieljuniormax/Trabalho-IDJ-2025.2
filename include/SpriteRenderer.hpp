@@ -11,7 +11,6 @@
 #include "Component.hpp"
 #include "GameObject.hpp"
 #include "Sprite.hpp"
-
 #include <string>
 
 class SpriteRenderer : public Component {
@@ -24,9 +23,11 @@ class SpriteRenderer : public Component {
     void SetFrameCount(int frameCountW, int frameCountH);
     void Update(float dt) override;
     void Render() override;
-    void SetFrame(int frame);
-    
+
     void SetCameraFollower(bool on) { sprite.SetCameraFollower(on); };
+
+    void SetScale(float scaleX, float scaleY);
+    void SetFrame(int frame, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
   private:
     Sprite sprite;

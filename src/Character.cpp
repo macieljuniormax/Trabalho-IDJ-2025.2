@@ -101,6 +101,16 @@ void Character::Update(float dt) {
             taskQueue.pop();
         }
 
+        if (auto *sr = associated.GetComponent<SpriteRenderer>()) {
+            if (std::abs(speed.x) > 0.01f) {
+                if (speed.x < 0.0f) {
+                    sr->SetFrame(0, SDL_FLIP_HORIZONTAL);
+                } else {
+                    sr->SetFrame(0, SDL_FLIP_NONE);
+                }
+            }
+        }
+
         const bool isDead = (hp <= 0);
         if (Animator *animator = associated.GetComponent<Animator>()) {
             if (isDead) {

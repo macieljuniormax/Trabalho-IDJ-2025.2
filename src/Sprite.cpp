@@ -13,10 +13,11 @@
 
 Sprite::Sprite()
     : texture(nullptr), width(0), height(0), frameCountW(1), frameCountH(1),
-      cameraFollower(false) {}
+      cameraFollower(false), scale(1.0f, 1.0f), flip(SDL_FLIP_NONE) {}
 
 Sprite::Sprite(std::string file, int frameCountW, int frameCountH)
-    : texture(nullptr), width(0), height(0), cameraFollower(false) {
+    : texture(nullptr), width(0), height(0), cameraFollower(false),
+      scale(1.0f, 1.0f), flip(SDL_FLIP_NONE) {
     this->frameCountW = (frameCountW > 0 ? frameCountW : 1);
     this->frameCountH = (frameCountH > 0 ? frameCountH : 1);
     Open(file);
@@ -43,34 +44,38 @@ void Sprite::SetClip(int x, int y, int w, int h) {
     clipRect.h = h;
 }
 
-void Sprite::Render(int x, int y, int w, int h) {
+void Sprite::Render(int x, int y, int w, int h, float angle) {
     SDL_Rect dstrect;
-    
+
     if (cameraFollower) {
         dstrect.x = x;
         dstrect.y = y;
     } else {
-        dstrect.x = x - Camera::pos.x;
-        dstrect.y = y - Camera::pos.y;
+        dstrect.x = x - static_cast<int>(Camera::pos.x);
+        dstrect.y = y - static_cast<int>(Camera::pos.y);
     }
-    
-    dstrect.w = w;
-    dstrect.h = h;
 
-    if (SDL_RenderCopy(Game::GetInstance().GetRenderer(), texture, &clipRect,
-                       &dstrect)) {
-        std::cerr << "Erro ao renderizar textura: " << SDL_GetError()
+    dstrect.w = static_cast<int>(w * scale.x);
+    dstrect.h = static_cast<int>(h * scale.y);
+
+    SDL_RendererFlip finalFlip = static_cast<SDL_RendererFlip>(flip);
+
+    if (SDL_RenderCopyEx(Game::GetInstance().GetRenderer(), texture, &clipRect,
+                         &dstrect, angle, nullptr, finalFlip)) {
+        std::cerr << "Erro ao renderizar textura (Ex): " << SDL_GetError()
                   << std::endl;
         exit(1);
     }
 }
 
 int Sprite::GetWidth() {
-    return (frameCountW > 0) ? width / frameCountW : width;
+    int baseWidth = (frameCountW > 0) ? width / frameCountW : width;
+    return static_cast<int>(baseWidth * scale.x);
 }
 
 int Sprite::GetHeight() {
-    return (frameCountH > 0) ? height / frameCountH : height;
+    int baseHeight = (frameCountH > 0) ? height / frameCountH : height;
+    return static_cast<int>(baseHeight * scale.y);
 }
 
 bool Sprite::IsOpen() { return texture != nullptr; }
@@ -106,3 +111,16 @@ void Sprite::SetFrameCount(int frameCountW, int frameCountH) {
     this->frameCountH = frameCountH;
     this->frameCountW = frameCountW;
 }
+
+void Sprite::SetScale(float scaleX, float scaleY) {
+    if (scaleX != 0.0f) {
+        scale.x = scaleX;
+    }
+    if (scaleY != 0.0f) {
+        scale.y = scaleY;
+    }
+}
+
+Vec2 Sprite::GetScale() const { return scale; }
+
+void Sprite::SetFlip(SDL_RendererFlip newFlip) { flip = newFlip; }

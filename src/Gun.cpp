@@ -45,6 +45,16 @@ void Gun::Update(float dt) {
         const float aimDY = targetY - ownerY;
         const float aimAngleRad = std::atan2(aimDY, aimDX);
 
+        associated.angleDeg = aimAngleRad * (180.0 / M_PI);
+
+        if (auto *sr = associated.GetComponent<SpriteRenderer>()) {
+            if (std::cos(aimAngleRad) < 0.0f) {
+                sr->SetFrame(0, SDL_FLIP_VERTICAL);
+            } else {
+                sr->SetFrame(0, SDL_FLIP_NONE);
+            }
+        }
+
         const float HAND_PIVOT_X = +6.0f;
         const float HAND_PIVOT_Y = -4.0f;
         const float HOLD_OFFSET = 16.0f;
@@ -116,7 +126,8 @@ void Gun::Update(float dt) {
 void Gun::Render() {}
 
 void Gun::Shoot(const Vec2 &target) {
-    if (cooldownState != 0) return;
+    if (cooldownState != 0)
+        return;
 
     const float gunCenterX = associated.box.x + associated.box.w * 0.5f;
     const float gunCenterY = associated.box.y + associated.box.h * 0.5f;
