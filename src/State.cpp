@@ -13,6 +13,7 @@
 #include "TileMap.hpp"
 #include "TileSet.hpp"
 #include "Zombie.hpp"
+#include "PlayerController.hpp"
 
 #include <cstddef>
 
@@ -40,45 +41,54 @@ void State::LoadAssets() {
     music.Open("resources/audio/BGM.wav");
 
     /* Background */
-    GameObject *background = new GameObject();
+    {
+        GameObject *background = new GameObject();
 
-    background->box.x = 0;
-    background->box.y = 0;
-    background->box.w = 1200;
-    background->box.h = 900;
+        background->box.x = 0;
+        background->box.y = 0;
+        background->box.w = 1200;
+        background->box.h = 900;
 
-    SpriteRenderer *backgroundSR =
-        new SpriteRenderer(*background, "resources/img/Background.png");
+        SpriteRenderer *backgroundSR =
+            new SpriteRenderer(*background, "resources/img/Background.png");
 
-    backgroundSR->SetCameraFollower(true);
-    background->AddComponent(backgroundSR);
-    AddObject(background);
+        backgroundSR->SetCameraFollower(true);
+        background->AddComponent(backgroundSR);
+        AddObject(background);
+    }
 
     /* Mapa (TileMap) */
-    GameObject *mapGO = new GameObject();
-    TileSet *tileSet = new TileSet(64, 64, "resources/img/Tileset.png");
-    TileMap *tileMap = new TileMap(*mapGO, "resources/map/map.txt", tileSet);
+    {
+        GameObject *mapGO = new GameObject();
+        TileSet *tileSet = new TileSet(64, 64, "resources/img/Tileset.png");
+        TileMap *tileMap = new TileMap(*mapGO, "resources/map/map.txt", tileSet);
 
-    tileMap->SetParallax(0, 0.3f, 0.3f);
-    tileMap->SetParallax(1, 1.0f, 1.0f);
+        tileMap->SetParallax(0, 0.3f, 0.3f);
+        tileMap->SetParallax(1, 1.0f, 1.0f);
 
-    mapGO->box.x = 0;
-    mapGO->box.y = 0;
+        mapGO->box.x = 0;
+        mapGO->box.y = 0;
 
-    mapGO->AddComponent(tileMap);
+        mapGO->AddComponent(tileMap);
 
-    AddObject(mapGO);
+        AddObject(mapGO);
+    }
 
     /* Personagem Jogável*/
-    GameObject *playerGO = new GameObject();
-    playerGO->box.x = 1280.0f;
-    playerGO->box.y = 1280.0f;
+    {
+        GameObject *playerGO = new GameObject();
+        playerGO->box.x = 1280.0f;
+        playerGO->box.y = 1280.0f;
 
-    Character *character = new Character(*playerGO, "resources/img/Player.png");
-    playerGO->AddComponent(character);
+        Character *character = new Character(*playerGO, "resources/img/Player.png");
+        PlayerController *playerController = new PlayerController(*playerGO);
+        
+        playerGO->AddComponent(character);
+        playerGO->AddComponent(playerController);
 
-    std::weak_ptr<GameObject> playerPtr = AddObject(playerGO);
-    Camera::Follow(playerGO);
+        std::weak_ptr<GameObject> playerPtr = AddObject(playerGO);
+        Camera::Follow(playerGO);
+    }
 }
 
 void State::Update(float dt) {

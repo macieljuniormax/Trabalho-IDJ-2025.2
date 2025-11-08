@@ -18,10 +18,10 @@
 Character *Character::player = nullptr;
 
 Character::Character(GameObject &associated, const std::string &sprite)
-: Component(associated), gun(), taskQueue(), speed(0.0f, 0.0f),
-linearSpeed(200.0f), hp(100), deathTimer() {
+    : Component(associated), gun(), taskQueue(), speed(0.0f, 0.0f),
+      linearSpeed(200.0f), hp(100), deathTimer() {
 
-    SpriteRenderer *personagem = new SpriteRenderer(associated, sprite, 3, 2);
+    SpriteRenderer *personagem = new SpriteRenderer(associated, sprite, 3, 4);
     associated.AddComponent(personagem);
 
     Animator *animator = new Animator(associated);
@@ -67,52 +67,48 @@ void Character::Update(float dt) {
                            input.GetMouseY() + Camera::pos.y);
 
         if (command.type == Command::CommandType::MOVE) {
-            const float currentX = associated.box.x + associated.box.w * 0.5f;
-            const float currentY = associated.box.y + associated.box.h * 0.5f;
+            float dirX = command.pos.x;
+            float dirY = command.pos.y;
 
-            const float distanceX = command.pos.x - currentX;
-            const float distanceY = command.pos.y - currentY;
-            const float distance =
-            std::sqrt(distanceX * distanceX + distanceY * distanceY);
+            float len = std::sqrt(dirX * dirX + dirY * dirY);
+            if (len > 0.0f) {
+                dirX /= len;
+                dirY /= len;
 
-            const float maxStep = linearSpeed * dt;
+                speed.x = dirX * linearSpeed;
+                speed.y = dirY * linearSpeed;
 
-            if (distance <= MIN_DISTANCE_TO_TARGET ||
-                maxStep <= MIN_STEP_DISTANCE || distance <= maxStep) {
-
-                associated.box.x = command.pos.x - associated.box.w * 0.5f;
-                associated.box.y = command.pos.y - associated.box.y * 0.5f;
-                speed.x = speed.y = 0.0f;
-                taskQueue.pop();
+                associated.box.x += speed.x * dt;
+                associated.box.y += speed.y * dt;
             } else {
-                const float directionX = distanceX / distance;
-                const float directionY = distanceY / distance;
-
-                associated.box.x += directionX * maxStep;
-                associated.box.y += directionY * maxStep;
-
-                speed.x = directionX * linearSpeed;
-                speed.y = directionY * linearSpeed;
+                speed.x = speed.y = 0.0f;
             }
-        } else if (command.type == Command::CommandType::SHOOT) {
+
+            taskQueue.pop();
+        }
+
+        else if (command.type == Command::CommandType::SHOOT) {
             if (auto sharedGun = gun.lock()) {
                 if (auto *gunComponent = sharedGun->GetComponent<Gun>()) {
                     gunComponent->Shoot(target);
                 }
             }
             taskQueue.pop();
-        } else {
+        }
+
+        else {
             speed.x = speed.y = 0.0f;
+            taskQueue.pop();
         }
 
         const bool isDead = (hp <= 0);
-
         if (Animator *animator = associated.GetComponent<Animator>()) {
             if (isDead) {
                 animator->SetAnimation("dead");
             } else {
                 const bool isMoving =
-                (std::abs(speed.x) > 0.01f || std::abs(speed.y) > 0.01f);
+                    (std::abs(speed.x) > 0.01f || std::abs(speed.y) > 0.01f);
+                animator->SetAnimation(isMoving ? "walking" : "idle");
             }
         }
 
@@ -123,6 +119,8 @@ void Character::Update(float dt) {
             }
             speed.x = speed.y = 0.0f;
         }
+    } else {
+        speed.x = speed.y = 0.0f;
     }
 }
 

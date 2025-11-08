@@ -17,7 +17,7 @@ Gun::Gun(GameObject &associated, std::weak_ptr<GameObject> character)
       cdTimer(), character(std::move(character)) {
 
     SpriteRenderer *gun =
-        new SpriteRenderer(associated, "resources/img/Gun.png");
+        new SpriteRenderer(associated, "resources/img/Gun.png", 3, 2);
     associated.AddComponent(gun);
 
     Animator *animator = new Animator(associated);
@@ -35,16 +35,22 @@ void Gun::Update(float dt) {
         const float ownerY = owner->box.y + owner->box.h * 0.5f;
 
         auto &input = InputManager::GetInstance();
-        const float targetX = Camera::pos.x + owner->box.w + 0.5f;
-        const float targetY = Camera::pos.y + owner->box.y + 0.5f;
+        const float targetX = Camera::pos.x + input.GetMouseX();
+        const float targetY = Camera::pos.y + input.GetMouseY();
 
         const float aimDX = targetX - ownerX;
         const float aimDY = targetY - ownerY;
         const float aimAngleRad = std::atan2(aimDY, aimDX);
 
-        const float holdDistance = 24.0f;
-        const float gunX = ownerX + std::cos(aimAngleRad) * holdDistance;
-        const float gunY = ownerY + std::sin(aimAngleRad) * holdDistance;
+        const float HAND_PIVOT_X = +6.0f;
+        const float HAND_PIVOT_Y = -4.0f;
+        const float HOLD_OFFSET  = 16.0f;
+
+        const float baseX = ownerX + HAND_PIVOT_X;
+        const float baseY = ownerY + HAND_PIVOT_Y;
+
+        const float gunX = baseX + std::cos(aimAngleRad) * HOLD_OFFSET;
+        const float gunY = baseY + std::sin(aimAngleRad) * HOLD_OFFSET;
 
         associated.box.x = gunX - associated.box.w * 0.5f;
         associated.box.y = gunY - associated.box.h * 0.5f;
