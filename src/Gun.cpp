@@ -7,9 +7,12 @@
 
 #include "Gun.hpp"
 #include "Animator.hpp"
+#include "Bullet.hpp"
 #include "Camera.hpp"
+#include "Game.hpp"
 #include "InputManager.hpp"
 #include "SpriteRenderer.hpp"
+#include <cmath>
 
 Gun::Gun(GameObject &associated, std::weak_ptr<GameObject> character)
     : Component(associated), shotSound("resources/audio/Range.wav"),
@@ -44,7 +47,7 @@ void Gun::Update(float dt) {
 
         const float HAND_PIVOT_X = +6.0f;
         const float HAND_PIVOT_Y = -4.0f;
-        const float HOLD_OFFSET  = 16.0f;
+        const float HOLD_OFFSET = 16.0f;
 
         const float baseX = ownerX + HAND_PIVOT_X;
         const float baseY = ownerY + HAND_PIVOT_Y;
@@ -113,26 +116,31 @@ void Gun::Update(float dt) {
 void Gun::Render() {}
 
 void Gun::Shoot(const Vec2 &target) {
-    if (cooldownState != 0)
-        return;
+    if (cooldownState != 0) return;
 
-    if (auto owner = character.lock()) {
-        const float ownerX = owner->box.x + owner->box.w * 0.5f;
-        const float ownerY = owner->box.y + owner->box.h * 0.5f;
+    const float gunCenterX = associated.box.x + associated.box.w * 0.5f;
+    const float gunCenterY = associated.box.y + associated.box.h * 0.5f;
 
-        const float targetDirectionX = target.x - ownerX;
-        const float targetDirectionY = target.y - ownerY;
+    angle = std::atan2(target.y - gunCenterY, target.x - gunCenterX);
 
-        const float angleToTarget =
-            std::atan2(targetDirectionY, targetDirectionX);
+    constexpr float MUZZLE_OFFSET = 18.0f;
+    const float spawnX = gunCenterX + std::cos(angle) * MUZZLE_OFFSET;
+    const float spawnY = gunCenterY + std::sin(angle) * MUZZLE_OFFSET;
 
-        shotSound.Play(1);
+    GameObject *bulletGO = new GameObject();
+    bulletGO->box.x = spawnX;
+    bulletGO->box.y = spawnY;
 
-        cooldownState = 1;
-        cdTimer.Restart();
+    constexpr float BULLET_SPEED = 700.0f;
+    constexpr int BULLET_DAMAGE = 10;
+    constexpr float BULLET_MAX_DIST = 900.0f;
 
-        if (Animator *animator = associated.GetComponent<Animator>()) {
-            animator->SetAnimation("idle");
-        }
-    }
+    bulletGO->AddComponent(new Bullet(*bulletGO, angle, BULLET_SPEED,
+                                      BULLET_DAMAGE, BULLET_MAX_DIST));
+
+    Game::GetInstance().GetState().AddObject(bulletGO);
+
+    shotSound.Play(1);
+    cooldownState = 1;
+    cdTimer.Restart();
 }
