@@ -7,6 +7,7 @@
 
 #include "State.hpp"
 #include "Camera.hpp"
+#include "Character.hpp"
 #include "InputManager.hpp"
 #include "SpriteRenderer.hpp"
 #include "TileMap.hpp"
@@ -67,6 +68,17 @@ void State::LoadAssets() {
     mapGO->AddComponent(tileMap);
 
     AddObject(mapGO);
+
+    /* Personagem Jogável*/
+    GameObject *playerGO = new GameObject();
+    playerGO->box.x = 1280.0f;
+    playerGO->box.y = 1280.0f;
+
+    Character *character = new Character(*playerGO, "resources/img/Player.png");
+    playerGO->AddComponent(character);
+
+    std::weak_ptr<GameObject> playerPtr = AddObject(playerGO);
+    Camera::Follow(playerGO);
 }
 
 void State::Update(float dt) {

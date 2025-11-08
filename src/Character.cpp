@@ -18,8 +18,8 @@
 Character *Character::player = nullptr;
 
 Character::Character(GameObject &associated, const std::string &sprite)
-    : Component(associated), gun(), taskQueue(), speed(0.0f, 0.0f),
-      linearSpeed(200.0f), hp(100), deathTimer() {
+: Component(associated), gun(), taskQueue(), speed(0.0f, 0.0f),
+linearSpeed(200.0f), hp(100), deathTimer() {
 
     SpriteRenderer *personagem = new SpriteRenderer(associated, sprite, 3, 2);
     associated.AddComponent(personagem);
@@ -73,7 +73,7 @@ void Character::Update(float dt) {
             const float distanceX = command.pos.x - currentX;
             const float distanceY = command.pos.y - currentY;
             const float distance =
-                std::sqrt(distanceX * distanceX + distanceY * distanceY);
+            std::sqrt(distanceX * distanceX + distanceY * distanceY);
 
             const float maxStep = linearSpeed * dt;
 
@@ -112,7 +112,7 @@ void Character::Update(float dt) {
                 animator->SetAnimation("dead");
             } else {
                 const bool isMoving =
-                    (std::abs(speed.x) > 0.01f || std::abs(speed.y) > 0.01f);
+                (std::abs(speed.x) > 0.01f || std::abs(speed.y) > 0.01f);
             }
         }
 
@@ -127,3 +127,5 @@ void Character::Update(float dt) {
 }
 
 void Character::Render() {}
+
+void Character::Issue(Command task) { taskQueue.push(std::move(task)); }
