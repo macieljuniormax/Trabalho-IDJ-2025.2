@@ -46,9 +46,9 @@ class Character : public Component {
     float linearSpeed = 0.0f;
     int hp = 0;
     Timer deathTimer;
-    
+
     static constexpr float MIN_DISTANCE_TO_TARGET = 1e-4f;
-    static constexpr float MIN_STEP_DISTANCE     = 1e-6f;
+    static constexpr float MIN_STEP_DISTANCE = 1e-6f;
 };
 
 #endif /* Character_hpp */

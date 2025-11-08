@@ -9,27 +9,27 @@
 #define Gun_hpp
 
 #include "Component.hpp"
-#include "Vec2.hpp"
 #include "Sound.hpp"
 #include "Timer.hpp"
+#include "Vec2.hpp"
 #include <memory>
 
 class Gun : public Component {
-public:
-    Gun(GameObject& associated, std::weak_ptr<GameObject> character);
-    
+  public:
+    Gun(GameObject &associated, std::weak_ptr<GameObject> character);
+
     void Update(float dt) override;
     void Render() override;
-    
-    void Shoot(const Vec2& taget);
-    
-private:
+
+    void Shoot(const Vec2 &target);
+
+  private:
     Sound shotSound;
     Sound reloadSound;
-    
+
     int cooldownState = 0;
     Timer cdTimer;
-    
+
     std::weak_ptr<GameObject> character;
     float angle = 0.0f;
 };

@@ -103,3 +103,30 @@ void Gun::Update(float dt) {
         return;
     }
 }
+
+void Gun::Render() {}
+
+void Gun::Shoot(const Vec2 &target) {
+    if (cooldownState != 0)
+        return;
+
+    if (auto owner = character.lock()) {
+        const float ownerX = owner->box.x + owner->box.w * 0.5f;
+        const float ownerY = owner->box.y + owner->box.h * 0.5f;
+
+        const float targetDirectionX = target.x - ownerX;
+        const float targetDirectionY = target.y - ownerY;
+
+        const float angleToTarget =
+            std::atan2(targetDirectionY, targetDirectionX);
+
+        shotSound.Play(1);
+
+        cooldownState = 1;
+        cdTimer.Restart();
+
+        if (Animator *animator = associated.GetComponent<Animator>()) {
+            animator->SetAnimation("idle");
+        }
+    }
+}
