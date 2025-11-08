@@ -13,8 +13,7 @@ Animator::Animator(GameObject &associated)
       currentFrame(0), timeElapsed(0) {}
 
 void Animator::Update(float dt) {
-    if (frameTime == 0.0f)
-        return;
+    if (frameTime == 0.0f) return;
 
     timeElapsed += dt;
 
@@ -27,17 +26,17 @@ void Animator::Update(float dt) {
         }
 
         SpriteRenderer *sr = associated.GetComponent<SpriteRenderer>();
-        if (sr != nullptr)
-            sr->SetFrame(currentFrame);
+        if (sr != nullptr) sr->SetFrame(currentFrame);
     }
 }
 
 void Animator::Render() {}
 
 void Animator::SetAnimation(const std::string name) {
+    if (current == name) return;
+
     auto it = animations.find(name);
-    if (it == animations.end())
-        return;
+    if (it == animations.end()) return;
 
     const Animation &animation = it->second;
 
@@ -48,9 +47,11 @@ void Animator::SetAnimation(const std::string name) {
     currentFrame = frameStart;
     timeElapsed = 0.0f;
 
-    SpriteRenderer *sr = associated.GetComponent<SpriteRenderer>();
-    if (sr != nullptr)
+    current = name;
+
+    if (SpriteRenderer *sr = associated.GetComponent<SpriteRenderer>()) {
         sr->SetFrame(currentFrame);
+    }
 }
 
 void Animator::AddAnimation(const std::string name, const Animation &anim) {
