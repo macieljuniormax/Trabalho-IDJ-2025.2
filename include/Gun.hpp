@@ -20,8 +20,10 @@ class Gun : public Component {
 
     void Update(float dt) override;
     void Render() override;
-
+    void Start() override;
     void Shoot(const Vec2 &target);
+    
+    bool isPlayerGun; 
 
   private:
     Sound shotSound;

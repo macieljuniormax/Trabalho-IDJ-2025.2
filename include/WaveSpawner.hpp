@@ -14,17 +14,19 @@
 #include <vector>
 
 class WaveSpawner : public Component {
-  public:
+public:
     WaveSpawner(GameObject &associated);
-
+    
     void Update(float dt) override;
-    void Render() override {}
-
-  private:
+    void Render() override;
+    
+private:
     int zombieCounter;
     std::vector<Wave> waves;
     Timer zombieCooldownTimer;
     int currentWave;
+
+    bool npcSpawned;
 };
 
 #endif /* WaveSpawner_hpp */

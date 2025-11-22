@@ -9,6 +9,7 @@
 #include "Animator.hpp"
 #include "Bullet.hpp"
 #include "Camera.hpp"
+#include "Character.hpp"
 #include "Game.hpp"
 #include "InputManager.hpp"
 #include "SpriteRenderer.hpp"
@@ -154,4 +155,14 @@ void Gun::Shoot(const Vec2 &target) {
     shotSound.Play(1);
     cooldownState = 1;
     cdTimer.Restart();
+}
+
+void Gun::Start() {
+    if (auto owner = character.lock()) {
+        Character* ch = owner->GetComponent<Character>();
+
+        isPlayerGun = (ch == Character::player);
+    } else {
+        isPlayerGun = false; // segurança
+    }
 }

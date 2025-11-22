@@ -177,7 +177,7 @@ std::weak_ptr<GameObject> State::AddObject(GameObject *go) {
     objectArray.push_back(sp);
 
     if (started && sp) {
-        //        sp->Start()
+        sp->Start();
     }
 
     return std::weak_ptr<GameObject>(sp);

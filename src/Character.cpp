@@ -70,8 +70,6 @@ void Character::Update(float dt) {
     if (!taskQueue.empty()) {
         Command &command = taskQueue.front();
 
-        auto &input = InputManager::GetInstance();
-
         if (command.type == Command::CommandType::MOVE) {
             float dirX = command.pos.x;
             float dirY = command.pos.y;
@@ -89,28 +87,29 @@ void Character::Update(float dt) {
             } else {
                 speed.x = speed.y = 0.0f;
             }
-        } else if (command.type == Command::CommandType::SHOOT) {
+        }
+        else if (command.type == Command::CommandType::SHOOT) {
             if (auto sharedGun = gun.lock()) {
                 if (auto *gunComponent = sharedGun->GetComponent<Gun>()) {
-                    Vec2 target(input.GetMouseX() + Camera::pos.x,
-                                input.GetMouseY() + Camera::pos.y);
-                    gunComponent->Shoot(target);
+                    gunComponent->Shoot(command.pos);
                 }
             }
-        } else {
+        }
+        else {
             speed.x = speed.y = 0.0f;
         }
+
         taskQueue.pop();
     } else {
         speed.x = 0.0f;
         speed.y = 0.0f;
     }
 
+    // flip horizontal
     if (auto *sr = associated.GetComponent<SpriteRenderer>()) {
         if (std::abs(speed.x) > 0.01f) {
-            sr->SetFrame(0, (speed.x < 0.0f)
-                               ? SDL_FLIP_HORIZONTAL
-                               : SDL_FLIP_NONE);
+            sr->SetFrame(0, (speed.x < 0.0f) ? SDL_FLIP_HORIZONTAL
+                                             : SDL_FLIP_NONE);
         }
     }
 
@@ -139,13 +138,14 @@ void Character::Render() {}
 void Character::Issue(Command task) { taskQueue.push(std::move(task)); }
 
 void Character::NotifyCollision(GameObject &other) {
-    if (auto *zombie = other.GetComponent<Zombie>()) {
-        (void)zombie;
-
+    // 1) Contato físico com ZOMBIE (dano de toque)
+    if (other.GetComponent<Zombie>()) {
+        // Só o jogador "controlado" toma esse dano de contato
         if (this != Character::player) {
             return;
         }
 
+        // Cooldown de dano
         if (damageCooldown.Get() < 0.5f) {
             return;
         }
@@ -161,25 +161,36 @@ void Character::NotifyCollision(GameObject &other) {
             Sound deathSound("resources/audio/Dead.wav");
             deathSound.Play(1);
 
-            Camera::Unfollow();
+            // Só desfoca a câmera se for o player de verdade
+            if (this == Character::player) {
+                Camera::Unfollow();
+            }
+
             associated.RequestDelete();
         }
 
         return;
     }
 
+    // 2) Colisão com BULLET
     Bullet *bullet = other.GetComponent<Bullet>();
     if (!bullet)
         return;
 
+    // Filtra friendly fire com base em targetsPlayer
     if (bullet->targetsPlayer) {
+        // Essa bala foi feita para atingir o player.
+        // Se "this" NÃO é o player, ignora.
         if (this != Character::player)
             return;
     } else {
+        // Essa bala NÃO é para o player (ex.: tiros do próprio player).
+        // Se "this" é o player, ignora.
         if (this == Character::player)
             return;
     }
 
+    // Cooldown compartilhado com contato
     if (damageCooldown.Get() < 0.5f)
         return;
     damageCooldown.Restart();
@@ -193,7 +204,10 @@ void Character::NotifyCollision(GameObject &other) {
         Sound deathSound("resources/audio/Dead.wav");
         deathSound.Play(1);
 
-        Camera::Unfollow();
+        if (this == Character::player) {
+            Camera::Unfollow();
+        }
+
         associated.RequestDelete();
     }
 }
