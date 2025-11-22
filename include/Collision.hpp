@@ -13,7 +13,6 @@
 
 class Collision {
   public:
-    // Observação: IsColliding espera ângulos em radianos!
     static bool IsColliding(Rect &a, Rect &b, float angleOfA, float angleOfB);
 
   private:

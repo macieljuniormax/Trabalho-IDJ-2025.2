@@ -14,8 +14,10 @@
 #include "GameObject.hpp"
 #include "Gun.hpp"
 #include "InputManager.hpp"
+#include "Sound.hpp"
 #include "SpriteRenderer.hpp"
 #include "State.hpp"
+#include "Zombie.hpp"
 
 Character *Character::player = nullptr;
 
@@ -24,7 +26,6 @@ Character::Character(GameObject &associated, const std::string &sprite)
       linearSpeed(200.0f), hp(100), deathTimer(), damageCooldown() {
 
     SpriteRenderer *personagem = new SpriteRenderer(associated, sprite, 3, 4);
-    associated.AddComponent(personagem);
     associated.AddComponent(personagem);
 
     Animator *animator = new Animator(associated);
@@ -64,12 +65,12 @@ void Character::Start() {
 }
 
 void Character::Update(float dt) {
+    damageCooldown.Update(dt);
+
     if (!taskQueue.empty()) {
         Command &command = taskQueue.front();
 
         auto &input = InputManager::GetInstance();
-        Vec2 target = Vec2(input.GetMouseX() + Camera::pos.x,
-                           input.GetMouseY() + Camera::pos.y);
 
         if (command.type == Command::CommandType::MOVE) {
             float dirX = command.pos.x;
@@ -88,53 +89,47 @@ void Character::Update(float dt) {
             } else {
                 speed.x = speed.y = 0.0f;
             }
-
-            taskQueue.pop();
-        }
-
-        else if (command.type == Command::CommandType::SHOOT) {
+        } else if (command.type == Command::CommandType::SHOOT) {
             if (auto sharedGun = gun.lock()) {
                 if (auto *gunComponent = sharedGun->GetComponent<Gun>()) {
+                    Vec2 target(input.GetMouseX() + Camera::pos.x,
+                                input.GetMouseY() + Camera::pos.y);
                     gunComponent->Shoot(target);
                 }
             }
-            taskQueue.pop();
-        }
-
-        else {
-            speed.x = speed.y = 0.0f;
-            taskQueue.pop();
-        }
-
-        if (auto *sr = associated.GetComponent<SpriteRenderer>()) {
-            if (std::abs(speed.x) > 0.01f) {
-                if (speed.x < 0.0f) {
-                    sr->SetFrame(0, SDL_FLIP_HORIZONTAL);
-                } else {
-                    sr->SetFrame(0, SDL_FLIP_NONE);
-                }
-            }
-        }
-
-        const bool isDead = (hp <= 0);
-        if (Animator *animator = associated.GetComponent<Animator>()) {
-            if (isDead) {
-                animator->SetAnimation("dead");
-            } else {
-                const bool isMoving =
-                    (std::abs(speed.x) > 0.01f || std::abs(speed.y) > 0.01f);
-                animator->SetAnimation(isMoving ? "walking" : "idle");
-            }
-        }
-
-        if (isDead) {
-            deathTimer.Update(dt);
-            if (deathTimer.Get() >= 0.8f) {
-                associated.RequestDelete();
-            }
+        } else {
             speed.x = speed.y = 0.0f;
         }
+        taskQueue.pop();
     } else {
+        speed.x = 0.0f;
+        speed.y = 0.0f;
+    }
+
+    if (auto *sr = associated.GetComponent<SpriteRenderer>()) {
+        if (std::abs(speed.x) > 0.01f) {
+            sr->SetFrame(0, (speed.x < 0.0f)
+                               ? SDL_FLIP_HORIZONTAL
+                               : SDL_FLIP_NONE);
+        }
+    }
+
+    const bool isDead = (hp <= 0);
+    if (Animator *animator = associated.GetComponent<Animator>()) {
+        if (isDead) {
+            animator->SetAnimation("dead");
+        } else {
+            const bool isMoving =
+                (std::abs(speed.x) > 0.01f || std::abs(speed.y) > 0.01f);
+            animator->SetAnimation(isMoving ? "walking" : "idle");
+        }
+    }
+
+    if (isDead) {
+        deathTimer.Update(dt);
+        if (deathTimer.Get() >= 0.8f) {
+            associated.RequestDelete();
+        }
         speed.x = speed.y = 0.0f;
     }
 }
@@ -144,6 +139,34 @@ void Character::Render() {}
 void Character::Issue(Command task) { taskQueue.push(std::move(task)); }
 
 void Character::NotifyCollision(GameObject &other) {
+    if (auto *zombie = other.GetComponent<Zombie>()) {
+        (void)zombie;
+
+        if (this != Character::player) {
+            return;
+        }
+
+        if (damageCooldown.Get() < 0.5f) {
+            return;
+        }
+        damageCooldown.Restart();
+
+        const int contactDamage = 10;
+        hp -= contactDamage;
+
+        Sound hitSound("resources/audio/Hit1.wav");
+        hitSound.Play(1);
+
+        if (hp <= 0) {
+            Sound deathSound("resources/audio/Dead.wav");
+            deathSound.Play(1);
+
+            Camera::Unfollow();
+            associated.RequestDelete();
+        }
+
+        return;
+    }
 
     Bullet *bullet = other.GetComponent<Bullet>();
     if (!bullet)

@@ -8,15 +8,15 @@
 #include "State.hpp"
 #include "Camera.hpp"
 #include "Character.hpp"
+#include "Collider.hpp"
+#include "Collision.hpp"
 #include "InputManager.hpp"
+#include "PlayerController.hpp"
 #include "SpriteRenderer.hpp"
 #include "TileMap.hpp"
 #include "TileSet.hpp"
-#include "Zombie.hpp"
-#include "PlayerController.hpp"
-#include "Collider.hpp"
-#include "Collision.hpp"
 #include "WaveSpawner.hpp"
+#include "Zombie.hpp"
 
 #include <cstddef>
 
@@ -64,7 +64,8 @@ void State::LoadAssets() {
     {
         GameObject *mapGO = new GameObject();
         TileSet *tileSet = new TileSet(64, 64, "resources/img/Tileset.png");
-        TileMap *tileMap = new TileMap(*mapGO, "resources/map/map.txt", tileSet);
+        TileMap *tileMap =
+            new TileMap(*mapGO, "resources/map/map.txt", tileSet);
 
         tileMap->SetParallax(0, 0.3f, 0.3f);
         tileMap->SetParallax(1, 1.0f, 1.0f);
@@ -83,19 +84,20 @@ void State::LoadAssets() {
         playerGO->box.x = 1280.0f;
         playerGO->box.y = 1280.0f;
 
-        Character *character = new Character(*playerGO, "resources/img/Player.png");
+        Character *character =
+            new Character(*playerGO, "resources/img/Player.png");
         PlayerController *playerController = new PlayerController(*playerGO);
-        
+
         playerGO->AddComponent(character);
         playerGO->AddComponent(playerController);
 
         std::weak_ptr<GameObject> playerPtr = AddObject(playerGO);
         Camera::Follow(playerGO);
     }
-    
+
     /* Wave Spawner */
     {
-        GameObject* spawnerGO = new GameObject();
+        GameObject *spawnerGO = new GameObject();
         spawnerGO->box.x = 0.0f;
         spawnerGO->box.y = 0.0f;
 
@@ -127,24 +129,26 @@ void State::Update(float dt) {
     for (std::size_t i = 0; i < objectArray.size(); i++) {
         objectArray[i]->Update(dt);
     }
-    
+
     for (std::size_t i = 0; i < objectArray.size(); ++i) {
         auto &objA = objectArray[i];
-        if (!objA) continue;
+        if (!objA)
+            continue;
 
         Collider *colA = objA->GetComponent<Collider>();
-        if (!colA) continue;
+        if (!colA)
+            continue;
 
         for (std::size_t j = i + 1; j < objectArray.size(); ++j) {
             auto &objB = objectArray[j];
-            if (!objB) continue;
+            if (!objB)
+                continue;
 
             Collider *colB = objB->GetComponent<Collider>();
-            if (!colB) continue;
+            if (!colB)
+                continue;
 
-            if (Collision::IsColliding(colA->box,
-                                       colB->box,
-                                       objA->angleDeg,
+            if (Collision::IsColliding(colA->box, colB->box, objA->angleDeg,
                                        objB->angleDeg)) {
                 objA->NotifyCollision(*objB);
                 objB->NotifyCollision(*objA);
