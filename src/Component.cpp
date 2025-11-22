@@ -10,3 +10,7 @@
 
 Component::Component(GameObject &associated) : associated(associated) {}
 Component::~Component() = default;
+
+void Component::NotifyCollision(GameObject &other) {
+    (void)other;
+}
