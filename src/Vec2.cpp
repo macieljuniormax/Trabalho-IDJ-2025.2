@@ -6,6 +6,7 @@
 //
 
 #include "Vec2.hpp"
+#include <cmath>
 
 Vec2::Vec2() : x(0), y(0) {}
 
@@ -20,3 +21,9 @@ Vec2 Vec2::operator-(const Vec2 &rhs) const {
 }
 
 Vec2 Vec2::operator*(float rhs) const { return Vec2(x * rhs, y * rhs); }
+
+Vec2 Vec2::Rotate(float rad) const {
+    float cs = std::cos(rad);
+    float sn = std::sin(rad);
+    return Vec2(x * cs - y * sn, x * sn + y * cs);
+}
