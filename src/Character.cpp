@@ -126,7 +126,7 @@ void Character::Update(float dt) {
 
     if (isDead) {
         deathTimer.Update(dt);
-        if (deathTimer.Get() >= 0.8f) {
+        if (deathTimer.Get() >= 2.0f) {
             associated.RequestDelete();
         }
         speed.x = speed.y = 0.0f;
@@ -162,7 +162,7 @@ void Character::NotifyCollision(GameObject &other) {
                 Camera::Unfollow();
             }
 
-            associated.RequestDelete();
+            deathTimer.Restart();
         }
 
         return;
@@ -197,6 +197,6 @@ void Character::NotifyCollision(GameObject &other) {
             Camera::Unfollow();
         }
 
-        associated.RequestDelete();
+        deathTimer.Restart();
     }
 }

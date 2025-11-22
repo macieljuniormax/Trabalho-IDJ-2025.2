@@ -20,10 +20,7 @@ class Gun : public Component {
 
     void Update(float dt) override;
     void Render() override;
-    void Start() override;
     void Shoot(const Vec2 &target);
-    
-    bool isPlayerGun; 
 
   private:
     Sound shotSound;
@@ -34,6 +31,8 @@ class Gun : public Component {
 
     std::weak_ptr<GameObject> character;
     float angle = 0.0f;
+    
+    bool isPlayerGun;
 };
 
 #endif /* Gun_hpp */

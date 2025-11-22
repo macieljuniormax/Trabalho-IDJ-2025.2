@@ -18,7 +18,13 @@
 Gun::Gun(GameObject &associated, std::weak_ptr<GameObject> character)
     : Component(associated), shotSound("resources/audio/Range.wav"),
       reloadSound("resources/audio/PumpAction.mp3"), cooldownState(0),
-      cdTimer(), character(std::move(character)) {
+      cdTimer(), character(std::move(character)), isPlayerGun(false) {
+
+    if (auto owner = this->character.lock()) {
+        if (auto *ch = owner->GetComponent<Character>()) {
+            isPlayerGun = (ch == Character::player);
+        }
+    }
 
     SpriteRenderer *gun =
         new SpriteRenderer(associated, "resources/img/Gun.png", 3, 2);
@@ -135,9 +141,9 @@ void Gun::Shoot(const Vec2 &target) {
 
     angle = std::atan2(target.y - gunCenterY, target.x - gunCenterX);
 
-    constexpr float MUZZLE_OFFSET   = 18.0f;
-    constexpr float BULLET_SPEED    = 700.0f;
-    constexpr int   BULLET_DAMAGE   = 10;
+    constexpr float MUZZLE_OFFSET = 18.0f;
+    constexpr float BULLET_SPEED = 700.0f;
+    constexpr int BULLET_DAMAGE = 10;
     constexpr float BULLET_MAX_DIST = 900.0f;
 
     auto spawnBullet = [&](float angRad) {
@@ -148,14 +154,9 @@ void Gun::Shoot(const Vec2 &target) {
         bulletGO->box.x = spawnX;
         bulletGO->box.y = spawnY;
 
-        bulletGO->AddComponent(
-            new Bullet(*bulletGO,
-                       angRad,
-                       BULLET_SPEED,
-                       BULLET_DAMAGE,
-                       BULLET_MAX_DIST,
-                       isPlayerGun)
-        );
+        bulletGO->AddComponent(new Bullet(*bulletGO, angRad, BULLET_SPEED,
+                                          BULLET_DAMAGE, BULLET_MAX_DIST,
+                                          !isPlayerGun));
 
         Game::GetInstance().GetState().AddObject(bulletGO);
     };
@@ -171,14 +172,4 @@ void Gun::Shoot(const Vec2 &target) {
     shotSound.Play(1);
     cooldownState = 1;
     cdTimer.Restart();
-}
-
-void Gun::Start() {
-    if (auto owner = character.lock()) {
-        Character* ch = owner->GetComponent<Character>();
-
-        isPlayerGun = (ch == Character::player);
-    } else {
-        isPlayerGun = false;
-    }
 }
