@@ -7,6 +7,7 @@
 
 #include "Zombie.hpp"
 #include "Animator.hpp"
+#include "Bullet.hpp"
 #include "Camera.hpp"
 #include "Collider.hpp"
 #include "InputManager.hpp"
@@ -93,3 +94,17 @@ void Zombie::Update(float dt) {
 }
 
 void Zombie::Render() {}
+
+void Zombie::NotifyCollision(GameObject &other) {
+    if (dead) {
+        return;
+    }
+
+    if (Bullet *bullet = other.GetComponent<Bullet>()) {
+        if (bullet->targetsPlayer) {
+            return;
+        }
+
+        Damage(bullet->GetDamage());
+    }
+}

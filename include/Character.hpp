@@ -12,9 +12,9 @@
 #include "GameObject.hpp"
 #include "Timer.hpp"
 #include "Vec2.hpp"
+#include <memory>
 #include <queue>
 #include <string>
-#include <memory>
 
 class Character : public Component {
   public:
@@ -36,6 +36,7 @@ class Character : public Component {
     void Render() override;
 
     void Issue(Command task);
+    void NotifyCollision(GameObject &other) override;
 
     static Character *player;
 
@@ -47,6 +48,7 @@ class Character : public Component {
     float linearSpeed = 0.0f;
     int hp = 0;
     Timer deathTimer;
+    Timer damageCooldown;
 
     static constexpr float MIN_DISTANCE_TO_TARGET = 1e-4f;
     static constexpr float MIN_STEP_DISTANCE = 1e-6f;

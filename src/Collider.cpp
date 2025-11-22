@@ -11,14 +11,12 @@
 #include <cmath>
 
 Collider::Collider(GameObject &associated, Vec2 scale, Vec2 offset)
-    : Component(associated),
-      box(associated.box),
-      scale(scale),
-      offset(offset) {}
+    : Component(associated), box(associated.box), scale(scale), offset(offset) {
+}
 
 void Collider::Update(float dt) {
     (void)dt;
-    
+
     box = associated.box;
 
     box.w *= scale.x;
@@ -27,7 +25,8 @@ void Collider::Update(float dt) {
     const float objectCenterX = associated.box.x + associated.box.w * 0.5f;
     const float objectCenterY = associated.box.y + associated.box.h * 0.5f;
 
-    const float angleRad = static_cast<float>(associated.angleDeg) * M_PI / 180.0f;
+    const float angleRad =
+        static_cast<float>(associated.angleDeg) * M_PI / 180.0f;
 
     const float cosA = std::cos(angleRad);
     const float sinA = std::sin(angleRad);
@@ -41,10 +40,6 @@ void Collider::Update(float dt) {
 
 void Collider::Render() {}
 
-void Collider::SetScale(Vec2 newScale) {
-    scale = newScale;
-}
+void Collider::SetScale(Vec2 newScale) { scale = newScale; }
 
-void Collider::SetOffset(Vec2 newOffset) {
-    offset = newOffset;
-}
+void Collider::SetOffset(Vec2 newOffset) { offset = newOffset; }

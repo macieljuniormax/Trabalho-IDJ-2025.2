@@ -10,21 +10,22 @@
 
 #include "Component.hpp"
 #include "GameObject.hpp"
-#include "Vec2.hpp"
 #include "Rect.hpp"
+#include "Vec2.hpp"
 
 class Collider : public Component {
-public:
-    Collider(GameObject &associeated, Vec2 scale = {1, 1}, Vec2 offset = {0, 0});
-    
+  public:
+    Collider(GameObject &associeated, Vec2 scale = {1, 1},
+             Vec2 offset = {0, 0});
+
     void Update(float dt) override;
     void Render() override;
     void SetScale(Vec2 scale);
     void SetOffset(Vec2 offset);
-    
+
     Rect box;
-    
-private:
+
+  private:
     Vec2 scale;
     Vec2 offset;
 };

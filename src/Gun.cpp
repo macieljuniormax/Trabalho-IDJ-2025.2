@@ -147,7 +147,7 @@ void Gun::Shoot(const Vec2 &target) {
     constexpr float BULLET_MAX_DIST = 900.0f;
 
     bulletGO->AddComponent(new Bullet(*bulletGO, angle, BULLET_SPEED,
-                                      BULLET_DAMAGE, BULLET_MAX_DIST));
+                                      BULLET_DAMAGE, BULLET_MAX_DIST, false));
 
     Game::GetInstance().GetState().AddObject(bulletGO);
 

@@ -21,15 +21,16 @@ class Zombie : public Component {
 
     void Update(float dt) override;
     void Render() override;
+    void NotifyCollision(GameObject &other) override;
 
   private:
     int hitpoints;
     bool hit;
     bool dead;
-    
+
     Sound hitSound;
     Sound deathSound;
-    
+
     Timer hitTimer;
     Timer deathTimer;
 };

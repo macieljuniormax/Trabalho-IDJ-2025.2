@@ -7,6 +7,7 @@
 
 #include "Character.hpp"
 #include "Animator.hpp"
+#include "Bullet.hpp"
 #include "Camera.hpp"
 #include "Collider.hpp"
 #include "Game.hpp"
@@ -20,9 +21,10 @@ Character *Character::player = nullptr;
 
 Character::Character(GameObject &associated, const std::string &sprite)
     : Component(associated), gun(), taskQueue(), speed(0.0f, 0.0f),
-      linearSpeed(200.0f), hp(100), deathTimer() {
+      linearSpeed(200.0f), hp(100), deathTimer(), damageCooldown() {
 
     SpriteRenderer *personagem = new SpriteRenderer(associated, sprite, 3, 4);
+    associated.AddComponent(personagem);
     associated.AddComponent(personagem);
 
     Animator *animator = new Animator(associated);
@@ -140,3 +142,35 @@ void Character::Update(float dt) {
 void Character::Render() {}
 
 void Character::Issue(Command task) { taskQueue.push(std::move(task)); }
+
+void Character::NotifyCollision(GameObject &other) {
+
+    Bullet *bullet = other.GetComponent<Bullet>();
+    if (!bullet)
+        return;
+
+    if (bullet->targetsPlayer) {
+        if (this != Character::player)
+            return;
+    } else {
+        if (this == Character::player)
+            return;
+    }
+
+    if (damageCooldown.Get() < 0.5f)
+        return;
+    damageCooldown.Restart();
+
+    hp -= bullet->GetDamage();
+
+    Sound hitSound("resources/audio/Hit1.wav");
+    hitSound.Play(1);
+
+    if (hp <= 0) {
+        Sound deathSound("resources/audio/Dead.wav");
+        deathSound.Play(1);
+
+        Camera::Unfollow();
+        associated.RequestDelete();
+    }
+}

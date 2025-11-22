@@ -6,15 +6,18 @@
 //
 
 #include "Bullet.hpp"
+#include "Character.hpp"
 #include "Collider.hpp"
 #include "SpriteRenderer.hpp"
+#include "Zombie.hpp"
 #include <cmath>
 
 Bullet::Bullet(GameObject &associated, float angle, float speedValue,
-               int damageValue, float maxDistance)
+               int damageValue, float maxDistance, bool targetsPlayer)
     : Component(associated),
       speed(std::cos(angle) * speedValue, std::sin(angle) * speedValue),
-      distanceLeft(maxDistance), damage(damageValue) {
+      distanceLeft(maxDistance), damage(damageValue),
+      targetsPlayer(targetsPlayer) {
 
     SpriteRenderer *sprite =
         new SpriteRenderer(associated, "resources/img/Bullet.png");
@@ -43,3 +46,24 @@ void Bullet::Update(float dt) {
 void Bullet::Render() {}
 
 int Bullet::GetDamage() const { return damage; }
+
+void Bullet::NotifyCollision(GameObject &other) {
+
+    if (other.GetComponent<Bullet>())
+        return;
+
+    if (auto *ch = other.GetComponent<Character>()) {
+        if (targetsPlayer && Character::player != ch)
+            return;
+        if (!targetsPlayer && Character::player == ch)
+            return;
+
+        associated.RequestDelete();
+        return;
+    }
+
+    if (other.GetComponent<Zombie>()) {
+        associated.RequestDelete();
+        return;
+    }
+}
