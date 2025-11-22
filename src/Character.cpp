@@ -8,6 +8,7 @@
 #include "Character.hpp"
 #include "Animator.hpp"
 #include "Camera.hpp"
+#include "Collider.hpp"
 #include "Game.hpp"
 #include "GameObject.hpp"
 #include "Gun.hpp"
@@ -32,6 +33,8 @@ Character::Character(GameObject &associated, const std::string &sprite)
     animator->AddAnimation("dead", Animation(10, 11, 0.00f));
 
     animator->SetAnimation("idle");
+
+    associated.AddComponent(new Collider(associated));
 
     if (Character::player == nullptr) {
         Character::player = this;

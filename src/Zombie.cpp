@@ -7,9 +7,10 @@
 
 #include "Zombie.hpp"
 #include "Animator.hpp"
+#include "Camera.hpp"
+#include "Collider.hpp"
 #include "InputManager.hpp"
 #include "SpriteRenderer.hpp"
-#include "Camera.hpp"
 
 Zombie::Zombie(GameObject &associated)
     : Component(associated), hitpoints(100), hit(false), dead(false),
@@ -27,6 +28,8 @@ Zombie::Zombie(GameObject &associated)
     animator->AddAnimation("hit", Animation(4, 4, 0.15f));
 
     animator->SetAnimation("walking");
+
+    associated.AddComponent(new Collider(associated));
 }
 
 void Zombie::Damage(int damage) {
@@ -39,11 +42,11 @@ void Zombie::Damage(int damage) {
     if (hitpoints <= 0) {
         hitpoints = 0;
         dead = true;
-        
+
         if (auto *animator = associated.GetComponent<Animator>()) {
             animator->SetAnimation("dead");
         }
-        
+
         deathTimer.Restart();
         deathSound.Play(1);
     } else {
@@ -59,8 +62,8 @@ void Zombie::Damage(int damage) {
 void Zombie::Update(float dt) {
     hitTimer.Update(dt);
     deathTimer.Update(dt);
-    
-    if (dead && deathTimer.Get() >=5) {
+
+    if (dead && deathTimer.Get() >= 5) {
         associated.RequestDelete();
     }
 
