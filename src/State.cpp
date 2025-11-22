@@ -14,6 +14,8 @@
 #include "TileSet.hpp"
 #include "Zombie.hpp"
 #include "PlayerController.hpp"
+#include "Collider.hpp"
+#include "Collision.cpp"
 
 #include <cstddef>
 
@@ -113,6 +115,30 @@ void State::Update(float dt) {
 
     for (std::size_t i = 0; i < objectArray.size(); i++) {
         objectArray[i]->Update(dt);
+    }
+    
+    for (std::size_t i = 0; i < objectArray.size(); ++i) {
+        auto &objA = objectArray[i];
+        if (!objA) continue;
+
+        Collider *colA = objA->GetComponent<Collider>();
+        if (!colA) continue;
+
+        for (std::size_t j = i + 1; j < objectArray.size(); ++j) {
+            auto &objB = objectArray[j];
+            if (!objB) continue;
+
+            Collider *colB = objB->GetComponent<Collider>();
+            if (!colB) continue;
+
+            if (Collision::IsColliding(colA->box,
+                                       colB->box,
+                                       objA->angleDeg,
+                                       objB->angleDeg)) {
+                objA->NotifyCollision(*objB);
+                objB->NotifyCollision(*objA);
+            }
+        }
     }
 
     for (std::size_t i = 0; i < objectArray.size(); i++) {

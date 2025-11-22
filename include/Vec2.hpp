@@ -14,6 +14,10 @@ class Vec2 {
 
     Vec2();
     Vec2(float x, float y);
+    
+    Vec2 operator+(const Vec2 &rhs) const;
+    Vec2 operator-(const Vec2 &rhs) const;
+    Vec2 operator*(float rhs) const;
 };
 
 #endif /* Vec2_hpp */
