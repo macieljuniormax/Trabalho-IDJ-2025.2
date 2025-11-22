@@ -70,6 +70,19 @@ As principais classes e modificações implementadas foram:
 - **GameObject**: adicionado o atributo `angleDeg` para representar o ângulo de rotação de cada objeto na tela.
 - **State**: criação do personagem jogável e de sua arma. Integra o `PlayerController` ao jogador e define o foco da câmera no personagem.
 
+## 🧨 Trabalho 6 – Colisões, Spawner e AI
+
+As principais classes e modificações implementadas foram:
+
+- **Collider**: novo componente responsável pela caixa de colisão dos objetos. Suporta escala, offset e rotação, além de visualização em modo debug (`Collider::Render`). Colliders agora são criados no `Start()` (quando possível) para evitar atraso de sincronização com o movimento.
+- **Collision**: implementação do algoritmo para detectar colisões entre retângulos rotacionados. O `State` realiza a varredura de colisões usando os Colliders e chama `NotifyCollision` nos GameObjects envolvidos.
+- **GameObject / Component**: adicionados métodos `NotifyCollision` para que cada componente possa responder ao evento de colisão de forma apropriada.
+- **Character**: agora leva dano ao encostar em Zombies leva dano de Bullets, e toca sons de hit e morte. Ao morrer, desfoca a câmera e remove-se corretamente do jogo.
+- **Bullet**: passou a receber o parâmetro `targetsPlayer`, impedindo friendly fire entre NPCs e o próprio personagem. Ao colidir, remove-se do jogo e causa dano adequado. Implementado tiro múltiplo.
+- **Zombie**: ao morrer, remove seu Collider para não causar dano residual e não bloquear projéteis. Agora possui flip horizontal quando anda para a esquerda, além de usar um contador estático `zombieCount` para controlar a progressão das waves.
+- **WaveSpawner**: implementa sistema de waves com cooldown, geração de inimigos fora da tela e avanço automático após eliminação total dos zumbis. Remove-se ao concluir todas as waves.
+- **AIController**: adicionada IA simples com dois estados. O NPC espera, anda até o player e atira assim que se aproxima, repetindo o ciclo enquanto o jogador estiver vivo.
+
 ## 👤 Autor
 
 - **Maciel Ferreira Custódio Júnior**
