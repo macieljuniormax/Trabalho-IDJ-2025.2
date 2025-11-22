@@ -38,6 +38,8 @@ class Character : public Component {
     void Issue(Command task);
     void NotifyCollision(GameObject &other) override;
 
+    GameObject &GetGameObject() { return associated; }
+
     static Character *player;
 
   private:

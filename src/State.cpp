@@ -15,7 +15,8 @@
 #include "Zombie.hpp"
 #include "PlayerController.hpp"
 #include "Collider.hpp"
-#include "Collision.cpp"
+#include "Collision.hpp"
+#include "WaveSpawner.hpp"
 
 #include <cstddef>
 
@@ -90,6 +91,16 @@ void State::LoadAssets() {
 
         std::weak_ptr<GameObject> playerPtr = AddObject(playerGO);
         Camera::Follow(playerGO);
+    }
+    
+    /* Wave Spawner */
+    {
+        GameObject* spawnerGO = new GameObject();
+        spawnerGO->box.x = 0.0f;
+        spawnerGO->box.y = 0.0f;
+
+        spawnerGO->AddComponent(new WaveSpawner(*spawnerGO));
+        AddObject(spawnerGO);
     }
 }
 

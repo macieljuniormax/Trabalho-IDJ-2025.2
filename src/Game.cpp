@@ -23,7 +23,7 @@ Game &Game::GetInstance() {
     return *instance;
 }
 
-Game::Game(std::string title, int width, int height) {
+Game::Game(std::string title, int width, int height) : width(width), height(height) {
     if (instance != nullptr) {
         std::cerr << "Erro: já existe uma instância de Game rodando!"
                   << std::endl;
@@ -125,3 +125,11 @@ void Game::CalculaDeltaTime() {
 }
 
 float Game::GetDeltaTime() { return dt; }
+
+int Game::GetWidth() const {
+    return width;
+}
+
+int Game::GetHeight() const {
+    return height;
+}

@@ -9,14 +9,19 @@
 #include "Animator.hpp"
 #include "Bullet.hpp"
 #include "Camera.hpp"
+#include "Character.hpp"
 #include "Collider.hpp"
 #include "InputManager.hpp"
 #include "SpriteRenderer.hpp"
+
+int Zombie::zombieCount = 0;
 
 Zombie::Zombie(GameObject &associated)
     : Component(associated), hitpoints(100), hit(false), dead(false),
       hitSound("resources/audio/Hit0.wav"),
       deathSound("resources/audio/Dead.wav") {
+    Zombie::zombieCount++;
+
     SpriteRenderer *zombie =
         new SpriteRenderer(associated, "resources/img/Enemy.png", 3, 2);
     Animator *animator = new Animator(associated);
@@ -31,6 +36,10 @@ Zombie::Zombie(GameObject &associated)
     animator->SetAnimation("walking");
 
     associated.AddComponent(new Collider(associated));
+}
+
+Zombie::~Zombie() {
+    Zombie::zombieCount--;
 }
 
 void Zombie::Damage(int damage) {
@@ -89,6 +98,24 @@ void Zombie::Update(float dt) {
 
         if (isInside) {
             Damage(10);
+        }
+    }
+    
+    if (!dead && Character::player != nullptr) {
+        GameObject& playerGO = Character::player->GetGameObject();
+
+        Vec2 target(playerGO.box.x, playerGO.box.y);
+        Vec2 pos(associated.box.x, associated.box.y);
+        Vec2 dir = target - pos;
+
+        float len = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+        if (len > 0.01f) {
+            dir.x /= len;
+            dir.y /= len;
+
+            const float ZOMBIE_SPEED = 80.0f;
+            associated.box.x += dir.x * ZOMBIE_SPEED * dt;
+            associated.box.y += dir.y * ZOMBIE_SPEED * dt;
         }
     }
 }
