@@ -16,6 +16,7 @@ class Bullet : public Component {
     Bullet(GameObject &associated, float angle, float speed, int damage,
            float maxDistance, bool targetsPlayer);
 
+    void Start() override;  
     void Update(float dt) override;
     void Render() override;
     void NotifyCollision(GameObject &other) override;

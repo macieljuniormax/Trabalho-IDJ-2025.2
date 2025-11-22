@@ -138,14 +138,11 @@ void Character::Render() {}
 void Character::Issue(Command task) { taskQueue.push(std::move(task)); }
 
 void Character::NotifyCollision(GameObject &other) {
-    // 1) Contato físico com ZOMBIE (dano de toque)
     if (other.GetComponent<Zombie>()) {
-        // Só o jogador "controlado" toma esse dano de contato
         if (this != Character::player) {
             return;
         }
 
-        // Cooldown de dano
         if (damageCooldown.Get() < 0.5f) {
             return;
         }
@@ -161,7 +158,6 @@ void Character::NotifyCollision(GameObject &other) {
             Sound deathSound("resources/audio/Dead.wav");
             deathSound.Play(1);
 
-            // Só desfoca a câmera se for o player de verdade
             if (this == Character::player) {
                 Camera::Unfollow();
             }
@@ -172,25 +168,18 @@ void Character::NotifyCollision(GameObject &other) {
         return;
     }
 
-    // 2) Colisão com BULLET
     Bullet *bullet = other.GetComponent<Bullet>();
     if (!bullet)
         return;
 
-    // Filtra friendly fire com base em targetsPlayer
     if (bullet->targetsPlayer) {
-        // Essa bala foi feita para atingir o player.
-        // Se "this" NÃO é o player, ignora.
         if (this != Character::player)
             return;
     } else {
-        // Essa bala NÃO é para o player (ex.: tiros do próprio player).
-        // Se "this" é o player, ignora.
         if (this == Character::player)
             return;
     }
 
-    // Cooldown compartilhado com contato
     if (damageCooldown.Get() < 0.5f)
         return;
     damageCooldown.Restart();

@@ -20,6 +20,7 @@ class Zombie : public Component {
 
     void Damage(int damage);
 
+    void Start() override; 
     void Update(float dt) override;
     void Render() override;
     void NotifyCollision(GameObject &other) override;

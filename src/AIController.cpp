@@ -30,7 +30,6 @@ AIController::AIController(GameObject &associated)
 AIController::~AIController() { --npcCounter; }
 
 void AIController::Update(float dt) {
-    // se não tem player, não faz nada
     if (Character::player == nullptr) {
         return;
     }
@@ -69,7 +68,6 @@ void AIController::Update(float dt) {
                 Character::Command::CommandType::MOVE, dir.x, dir.y);
             character->Issue(std::move(moveCmd));
         } else {
-            // chegou ~no destino: atira no player e volta para RESTING
             GameObject &playerGO = Character::player->GetGameObject();
             Vec2 target(playerGO.box.x + playerGO.box.w * 0.5f,
                         playerGO.box.y + playerGO.box.h * 0.5f);

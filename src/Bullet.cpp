@@ -23,13 +23,15 @@ Bullet::Bullet(GameObject &associated, float angle, float speedValue,
         new SpriteRenderer(associated, "resources/img/Bullet.png");
     associated.AddComponent(sprite);
 
-    associated.AddComponent(new Collider(associated));
-
     associated.angleDeg = angle * (180.0 / M_PI);
 
     if (auto *sr = associated.GetComponent<SpriteRenderer>()) {
         sr->SetScale(0.75f, 0.75);
     }
+}
+
+void Bullet::Start() {
+    associated.AddComponent(new Collider(associated));
 }
 
 void Bullet::Update(float dt) {

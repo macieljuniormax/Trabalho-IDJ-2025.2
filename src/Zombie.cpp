@@ -42,6 +42,10 @@ Zombie::~Zombie() {
     Zombie::zombieCount--;
 }
 
+void Zombie::Start() {
+    associated.AddComponent(new Collider(associated));
+}
+
 void Zombie::Damage(int damage) {
     if (hitpoints <= 0)
         return;
@@ -52,6 +56,10 @@ void Zombie::Damage(int damage) {
     if (hitpoints <= 0) {
         hitpoints = 0;
         dead = true;
+        
+        if (auto *col = associated.GetComponent<Collider>()) {
+            associated.RemoveComponent(col);
+        }
 
         if (auto *animator = associated.GetComponent<Animator>()) {
             animator->SetAnimation("dead");
@@ -102,7 +110,7 @@ void Zombie::Update(float dt) {
     }
     
     if (!dead && Character::player != nullptr) {
-        GameObject& playerGO = Character::player->GetGameObject();
+        GameObject &playerGO = Character::player->GetGameObject();
 
         Vec2 target(playerGO.box.x, playerGO.box.y);
         Vec2 pos(associated.box.x, associated.box.y);
@@ -116,6 +124,16 @@ void Zombie::Update(float dt) {
             const float ZOMBIE_SPEED = 80.0f;
             associated.box.x += dir.x * ZOMBIE_SPEED * dt;
             associated.box.y += dir.y * ZOMBIE_SPEED * dt;
+
+            // Flip baseado no eixo X
+            if (auto *sr = associated.GetComponent<SpriteRenderer>()) {
+                if (std::abs(dir.x) > 0.01f) {
+                    sr->SetFrame(
+                        0,
+                        (dir.x < 0.0f) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE
+                    );
+                }
+            }
         }
     }
 }

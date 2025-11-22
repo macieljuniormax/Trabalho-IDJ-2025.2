@@ -135,22 +135,38 @@ void Gun::Shoot(const Vec2 &target) {
 
     angle = std::atan2(target.y - gunCenterY, target.x - gunCenterX);
 
-    constexpr float MUZZLE_OFFSET = 18.0f;
-    const float spawnX = gunCenterX + std::cos(angle) * MUZZLE_OFFSET;
-    const float spawnY = gunCenterY + std::sin(angle) * MUZZLE_OFFSET;
-
-    GameObject *bulletGO = new GameObject();
-    bulletGO->box.x = spawnX;
-    bulletGO->box.y = spawnY;
-
-    constexpr float BULLET_SPEED = 700.0f;
-    constexpr int BULLET_DAMAGE = 10;
+    constexpr float MUZZLE_OFFSET   = 18.0f;
+    constexpr float BULLET_SPEED    = 700.0f;
+    constexpr int   BULLET_DAMAGE   = 10;
     constexpr float BULLET_MAX_DIST = 900.0f;
 
-    bulletGO->AddComponent(new Bullet(*bulletGO, angle, BULLET_SPEED,
-                                      BULLET_DAMAGE, BULLET_MAX_DIST, false));
+    auto spawnBullet = [&](float angRad) {
+        const float spawnX = gunCenterX + std::cos(angRad) * MUZZLE_OFFSET;
+        const float spawnY = gunCenterY + std::sin(angRad) * MUZZLE_OFFSET;
 
-    Game::GetInstance().GetState().AddObject(bulletGO);
+        GameObject *bulletGO = new GameObject();
+        bulletGO->box.x = spawnX;
+        bulletGO->box.y = spawnY;
+
+        bulletGO->AddComponent(
+            new Bullet(*bulletGO,
+                       angRad,
+                       BULLET_SPEED,
+                       BULLET_DAMAGE,
+                       BULLET_MAX_DIST,
+                       isPlayerGun)
+        );
+
+        Game::GetInstance().GetState().AddObject(bulletGO);
+    };
+
+    spawnBullet(angle);
+
+    const float SPREAD_DEG = 10.0f;
+    const float SPREAD_RAD = SPREAD_DEG * (M_PI / 180.0f);
+
+    spawnBullet(angle + SPREAD_RAD);
+    spawnBullet(angle - SPREAD_RAD);
 
     shotSound.Play(1);
     cooldownState = 1;
@@ -163,6 +179,6 @@ void Gun::Start() {
 
         isPlayerGun = (ch == Character::player);
     } else {
-        isPlayerGun = false; // segurança
+        isPlayerGun = false;
     }
 }
